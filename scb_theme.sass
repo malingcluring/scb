@@ -7,3 +7,61 @@ body
 	height: 100%
 	padding: 0
 	margin: 0 auto
+	
+body
+	&:not(.page-home)
+		#musthead
+			display: none
+				
+	&.page-home
+		#musthead
+			display: block
+			height: 100vh
+			+gradient(lighten($theme,15), darken($theme, 20))
+			#carousel
+				.carousel-inner
+					height: 100vh
+					.item						
+						+screen(sm)
+							height: 100vh
+							img
+								left: 10%
+								+centerer(false, true)
+	.main-menu
+		+centerer(true, false)
+		top: 0
+		.navbar
+			background: transparent
+			border: none
+			border-color: transparent
+			border-radius: 0
+			
+			.navbar-header
+				.navbar-brand
+					padding: 0
+					margin-left: 0
+			#header_menu
+				.navbar-nav
+					& > li > a
+						color: $white
+						background: transparent
+						&:hover
+							background: lighten($theme,20)
+					& .active > a
+						background: darken($theme, 20)
+						color: lighten($yellow, 10)
+					.dropdown-menu
+						+box-shadow($x: 2px, $y: 2px, $blur: 5px, $color: rgba($black, 0.4), $inset: "")
+					.dropdown-menu > li > a
+						padding: 10px 20px
+						& > .caret
+							margin-left: 6px
+	
+
+
+
+
+
+
+
+

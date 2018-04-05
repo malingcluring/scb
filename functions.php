@@ -18,6 +18,8 @@ add_action( 'wp_enqueue_scripts', 'scb_styles' );
 
 // Register Script
 function scb_scripts() {
+	
+	wp_deregister_script('jquery');
 
 	wp_register_script( 'jquery', get_template_directory_uri() . '/vendor/js/jquery-3.3.1.min.js', false, false, false );
 	wp_enqueue_script( 'jquery' );
@@ -38,7 +40,8 @@ add_action( 'wp_enqueue_scripts', 'scb_scripts' );
 
 //--------------------------------------------------------------------REQUIRED FILE---------------------------------------------------------------------
 // Register Custom Navigation Walker
-require_once get_template_directory() . '/class-wp-bootstrap-navwalker.php';
+require_once get_template_directory() . '/wp-bootstrap-navwalker.php';
+
 
 //shortcode
 require_once get_template_directory(). '/scb_shortcode.php';
@@ -99,4 +102,20 @@ add_filter( 'emoji_svg_url', '__return_false' );
 
 //---------------------------------------------------------
 
+
+//---------------------------------------------------------
+//Page Slug Body Class
+function add_slug_body_class( $classes ) {
+	global $post;
+	if ( isset( $post ) ) {
+		$classes[] = $post -> post_type . '-' . $post -> post_name;
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'add_slug_body_class' );
+//--------------------------------------------------------
+
+
+
+/////=====================================================================================////
 ?>

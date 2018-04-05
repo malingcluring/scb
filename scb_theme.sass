@@ -12,24 +12,7 @@ body
 	&:not(.page-home)
 		#musthead
 			display: none
-				
-	&.page-home
-		#musthead
-			display: block
-			height: 100vh
-			+gradient(lighten($theme,15), darken($theme, 20))
-			#carousel
-				.carousel-inner
-					height: 100vh
-					.item						
-						+screen(sm)
-							height: 100vh
-							img
-								left: 10%
-								+centerer(false, true)
 	.main-menu
-		+centerer(true, false)
-		top: 0
 		.navbar
 			background: transparent
 			border: none
@@ -56,6 +39,19 @@ body
 						padding: 10px 20px
 						& > .caret
 							margin-left: 6px
+							
+	// ============================================================================================ HOME
+	&.page-home
+		.carousel
+			margin-top: -70px
+			z-index: -1
+			+gradient(lighten($theme, 15), darken($theme, 15))
+			.carousel-inner
+				.item
+					height: 100vh
+					img
+						+centered
+	// END HOME ========================================================================================
 	
 
 

@@ -1,20 +1,17 @@
 <?php
 
-//custom post sc
-// Add Shortcode
-function scb_post_shortcode() {
+// ---------------------------------------------------------------------------------------------------------------- POST
+add_shortcode( 'post', 'scb_post' );
+function scb_post() {
 	$args = array(
-		'post_type' => 'post' ,
-		'orderby' => 'date' ,
-		'order' => 'DESC' ,
-		'posts_per_page' => 6,
-		'cat'         => '3',
-		'paged' => get_query_var('paged'),
-		'post_parent' => $parent
+		'post_type' 		=> 'post' ,
+		'orderby' 			=> 'date' ,
+		'order' 			=> 'DESC' ,
+		'posts_per_page' 	=> 6,
+		'cat'         		=> '3',
+		'paged' 			=> get_query_var( 'paged' ),
+		'post_parent' 		=> $parent
 	);
-	
-	
-	
 
 	$string = '';
 	$query = new WP_Query( $args );
@@ -28,6 +25,27 @@ function scb_post_shortcode() {
 	return $string;
 
 }
-add_shortcode( 'scb-post', 'scb_post_shortcode' );
+
+
+
+
+// ---------------------------------------------------------------------------------------------------------------- CAROUSEL
+add_shortcode( 'carousel', 'scb_carousel' );
+function scb_carousel( $atts, $content = null ) {
+	if( isset( $GLOBALS[ 'count' ] ) )
+		$GLOBALS[ 'count' ]++;
+	else
+		$GLOBALS[ 'count' ] = 0;
+	$GLOBALS[ 'default_count' ] = 0;
+		
+	
+	$atts = shortcode_atts(array(
+		'id'	=> 'carousel_id',
+		'class' => '',
+		'url'	=> ''
+	), $atts );
+	
+	
+}
 
 ?>

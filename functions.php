@@ -11,6 +11,9 @@ function scb_styles() {
 	wp_register_style( 'custom', get_template_directory_uri(). '/scb_theme.css', array( 'bootstrap' ), false );
 	wp_enqueue_style( 'custom' );
 	
+	wp_register_style('roboto', 'https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab');
+	wp_enqueue_style('roboto');
+	
 	wp_enqueue_style( 'style', get_stylesheet_uri() );
 
 }
@@ -65,7 +68,12 @@ if(!function_exists('scbtheme_setup')) :
 		
 		//title TAG
 		add_theme_support( 'title-tag' );
+		
+		//post thumbnail
+		add_theme_support('post-thumbnails', array('page'));
 	}
+	
+	
 endif;
 add_action('after_setup_theme', 'scbtheme_setup');
 //-------------------------------------------------------------------------------------------------------------------------------------------------------

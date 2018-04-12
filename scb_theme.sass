@@ -7,57 +7,96 @@ body
 	height: 100%
 	padding: 0
 	margin: 0 auto
-	
+
 body
-	&:not(.page-home)
-		#musthead
-			display: none
-	.main-menu
-		.navbar
-			background: transparent
-			border: none
-			border-color: transparent
-			border-radius: 0
-			
-			.navbar-header
-				.navbar-brand
-					padding: 0
-					margin-left: 0
-			#header_menu
-				.navbar-nav
-					& > li > a
-						color: $white
-						background: transparent
-						&:hover
-							background: lighten($theme,20)
-					& .active > a
-						background: darken($theme, 20)
-						color: lighten($yellow, 10)
-					.dropdown-menu
-						+box-shadow($x: 2px, $y: 2px, $blur: 5px, $color: rgba($black, 0.4), $inset: "")
-					.dropdown-menu > li > a
-						padding: 10px 20px
-						& > .caret
-							margin-left: 6px
-							
-	// ============================================================================================ HOME
-	&.page-home
-		.carousel
-			margin-top: -70px
-			z-index: -1
-			+gradient(lighten($theme, 15), darken($theme, 15))
-			.carousel-inner
-				.item
-					height: 100vh
-					img
-						+centered
-	// END HOME ========================================================================================
-	
-
-
-
-
-
-
-
-
+    font-family: $font-default
+    &:not(.page-home)
+        #musthead
+            display: none
+    #musthead
+        position: absolute
+        top: 0
+        width: calc(100vw - 17px)
+        height: 100vh
+        z-index: -1
+        +gradient($theme, darken($theme,15))
+        
+    .main-menu
+        .navbar
+            background: $black
+            .navbar-header
+                .navbar-toggle
+                    .icon-bar
+                        background-color: $yellow
+                .navbar-brand
+                    margin-left: 0
+                    padding: 0 !important
+            #header_menu
+                .nav
+                    .open > a
+                        background-color: transparent
+                    & > li > a
+                        color: $white
+                        &:hover
+                            background-color: rgba($black, .35)
+                    & > .active > a
+                        color: $yellow
+                    .dropdown-menu
+                        li
+                            margin-left: 20px !important
+                            a
+                                padding-left: 20px
+                                color: $white !important
+                                & > .caret
+                                    margin-left: 8px
+                            +screen(xs)
+                                margin-left: inherit
+                                a
+                                    color: inherit
+            +screen(sm)
+                background: transparent
+                border: none
+                border-color: transparent
+                +radius(0)
+                
+                #header_menu
+                    .navbar-nav
+                        & > li > a
+                            color: $white
+                            &:hover
+                                background-color: rgba($black, .35)
+                        & > .active > a
+                            color: $yellow
+    .bg-img-float
+        position: absolute
+        display: none
+        top: -200px
+        width: 800px
+        height: 600px
+        overflow: hidden
+        z-index: -1
+        .wrapper
+            position: absolute
+            background-color: darken($white, 10)
+            right: 0
+            bottom: 60px
+            display: block
+            transform: rotate(25deg)
+            width: 600px
+            height: 600px
+            overflow: hidden
+            +radius(20%)
+            img
+                width: 100%
+                height: 100%
+        +screen(lg)
+            display: block
+            left: 60%
+            transform: translateX(-50%)
+            overflow: visible
+        +screen(xs)
+            display: block
+            right: 0
+            
+            
+            

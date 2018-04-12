@@ -1,0 +1,69 @@
+@import variables
+@import mixins
+
+html,
+body
+	width: 100%
+	height: 100%
+	padding: 0
+	margin: 0 auto
+	
+body 
+        
+	.main-menu
+		.navbar
+			background: transparent
+			border: none
+			border-color: transparent
+			border-radius: 0
+			
+			.navbar-header
+				.navbar-brand
+					padding: 0
+					margin-left: 0
+			#header_menu
+				.navbar-nav
+					& > li > a
+						color: $white
+						background: transparent
+						&:hover
+							background: lighten($theme,20)
+					& .active > a
+						background: darken($theme, 20)
+						color: lighten($yellow, 10)
+					.dropdown-menu
+						+box-shadow($x: 2px, $y: 2px, $blur: 5px, $color: rgba($black, 0.4), $inset: "")
+					.dropdown-menu > li > a
+						padding: 10px 20px
+						& > .caret
+							margin-left: 6px
+							
+	// ============================================================================================ HOME
+	&.page-home
+		.carousel
+			margin-top: -70px
+			z-index: -1
+			+gradient(lighten($theme, 15), darken($theme, 15))
+			.carousel-inner
+				.item
+					height: 100vh
+					img
+						+centered
+	// END HOME ========================================================================================
+    
+    .bg-img-float
+        position: absolute
+        width: 600px
+        height: 600px
+        top: -200px
+        right: 0
+        +rotate(45)
+	
+
+
+
+
+
+
+
+

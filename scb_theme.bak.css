@@ -1,0 +1,53 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0 auto; }
+
+body .main-menu .navbar {
+  background: transparent;
+  border: none;
+  border-color: transparent;
+  border-radius: 0; }
+  body .main-menu .navbar .navbar-header .navbar-brand {
+    padding: 0;
+    margin-left: 0; }
+  body .main-menu .navbar #header_menu .navbar-nav > li > a {
+    color: white;
+    background: transparent; }
+    body .main-menu .navbar #header_menu .navbar-nav > li > a:hover {
+      background: #ff2f36; }
+  body .main-menu .navbar #header_menu .navbar-nav .active > a {
+    background: #620003;
+    color: #ffd633; }
+  body .main-menu .navbar #header_menu .navbar-nav .dropdown-menu {
+    -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    -khtml-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    -ms-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    -o-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); }
+  body .main-menu .navbar #header_menu .navbar-nav .dropdown-menu > li > a {
+    padding: 10px 20px; }
+    body .main-menu .navbar #header_menu .navbar-nav .dropdown-menu > li > a > .caret {
+      margin-left: 6px; }
+
+body.page-home .carousel {
+  margin-top: -70px;
+  z-index: -1;
+  background-color: #ff161e;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ff161e), to(#7c0004));
+  background-image: -webkit-linear-gradient(top, #ff161e, #7c0004);
+  background-image: -moz-linear-gradient(top, #ff161e, #7c0004);
+  background-image: -ms-linear-gradient(top, #ff161e, #7c0004);
+  background-image: -o-linear-gradient(top, #ff161e, #7c0004);
+  background-image: linear-gradient(top, #ff161e, #7c0004);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ff161e', endColorStr='#7c0004'); }
+  body.page-home .carousel .carousel-inner .item {
+    height: 100vh; }
+    body.page-home .carousel .carousel-inner .item img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); }

@@ -1,6 +1,16 @@
 @import variables
 
+=clearfix 
+    &:after 
+        content: ""
+        display: table
+        clear: both
 
+=square($size)
+    width: $size
+    height: $size
+    
+    
 // Respond above.
 =screen($breakpoint) 
 
@@ -288,7 +298,7 @@
 	@if length($properties) >= 1
 		+css3-prefix("transition", $properties)
 	@else
-		+css3-prefix("transition", "all 0.2s ease-in-out 0s")
+		+css3-prefix("transition", "all 0.3s ease-in-out 0s")
 
 /// Triple Borders
 /// @param {Color} $colorOne [#3C3C3C] - Color One
@@ -352,3 +362,142 @@
 	@else if ($vertical)
 		top: 50%
 		transform: translate(0, -50%)
+        
+////============================================================================= container
+
+//== Grid system
+$grid-columns:              12 !default
+$grid-gutter-width:         30px !default
+$grid-float-breakpoint:     $breakpoint !default
+$grid-float-breakpoint-max: ($grid-float-breakpoint - 1) !default
+
+$container-tablet:          (720px + $grid-gutter-width) !default
+$container-sm:              $container-tablet !default
+
+$container-desktop:         (940px + $grid-gutter-width) !default
+
+$container-md:              $container-desktop !default
+
+$container-large-desktop:   (1140px + $grid-gutter-width) !default
+
+$container-lg:              $container-large-desktop !default
+
+=container-fixed($gutter: $grid-gutter-width)
+    margin-right: auto
+    margin-left: auto
+    padding-left:  ($gutter / 2)
+    padding-right: ($gutter / 2)
+    +clearfix
+
+
+// Creates a wrapper for a series of columns
+=make-row($gutter: $grid-gutter-width)
+    margin-left:  ($gutter / -2)
+    margin-right: ($gutter / -2)
+    +clearfix
+
+
+// Generate the extra small columns
+=make-xs-column($columns, $gutter: $grid-gutter-width)
+    position: relative
+    float: left
+    width: percentage(($columns / $grid-columns))
+    min-height: 1px
+    padding-left:  ($gutter / 2)
+    padding-right: ($gutter / 2)
+
+=make-xs-column-offset($columns)
+    margin-left: percentage(($columns / $grid-columns))
+
+=make-xs-column-push($columns)
+    left: percentage(($columns / $grid-columns))
+
+=make-xs-column-pull($columns)
+    right: percentage(($columns / $grid-columns))
+
+
+// Generate the small columns
+=make-sm-column($columns, $gutter: $grid-gutter-width)
+    position: relative
+    min-height: 1px
+    padding-left:  ($gutter / 2)
+    padding-right: ($gutter / 2)
+  
+    //@media (min-width: $tablet)
+    +screen(sm)
+        float: left
+        width: percentage(($columns / $grid-columns))
+    
+
+=make-sm-column-offset($columns)
+    @media (min-width: $tablet)
+        margin-left: percentage(($columns / $grid-columns))
+  
+
+=make-sm-column-push($columns)
+    @media (min-width: $tablet)
+        left: percentage(($columns / $grid-columns))
+  
+
+=make-sm-column-pull($columns)
+    @media (min-width: $tablet)
+        right: percentage(($columns / $grid-columns))
+  
+
+
+// Generate the medium columns
+=make-md-column($columns, $gutter: $grid-gutter-width)
+    position: relative
+    min-height: 1px
+    padding-left:  ($gutter / 2)
+    padding-right: ($gutter / 2)
+  
+    @media (min-width: $desktop)
+        float: left
+        width: percentage(($columns / $grid-columns))
+  
+
+=make-md-column-offset($columns)
+    @media (min-width: $desktop)
+        margin-left: percentage(($columns / $grid-columns))
+  
+
+=make-md-column-push($columns)
+    @media (min-width: $desktop)
+        left: percentage(($columns / $grid-columns))
+  
+
+=make-md-column-pull($columns)
+    @media (min-width: $desktop)
+        right: percentage(($columns / $grid-columns))
+  
+
+
+// Generate the large columns
+=make-lg-column($columns, $gutter: $grid-gutter-width)
+    position: relative
+    min-height: 1px
+    padding-left:  ($gutter / 2)
+    padding-right: ($gutter / 2)
+  
+    @media (min-width: $large)
+        float: left
+        width: percentage(($columns / $grid-columns))
+  
+
+=make-lg-column-offset($columns)
+    @media (min-width: $large)
+      margin-left: percentage(($columns / $grid-columns))
+  
+
+=make-lg-column-push($columns)
+    @media (min-width: $large)
+        left: percentage(($columns / $grid-columns))
+  
+
+=make-lg-column-pull($columns)
+    @media (min-width: $large)
+        right: percentage(($columns / $grid-columns))
+  
+
+  

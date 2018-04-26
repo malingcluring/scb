@@ -18,6 +18,9 @@
     +scb-button($theme)
 .btn-link
     +scb-button($black)
+    
+h1, h2, h3, h4, h5, h6
+    font-family: $font-heading
 
 html,
 body
@@ -28,43 +31,28 @@ body
   
 body
     font-family: $font-default
-    &:not(.page-home)
-        .entry-content
-            .the-title
-                display: block
-                font-size: 7em
-                width: 400px
-                font-weight: 700
-                
-        #musthead
-            display: none
-        .bg-img-float
-            +screen(xs)
-                display: none
-                +screen(sm)
-                display: block
-                top: -20%
-                left: 50%
-                right: 0
-                +transform(rotate(25deg) translatex(-30%))
-            +screen(lg)
-                display: block
-                top: -20%
-                left: 50%
-                +transform(rotate(25deg) translatex(-30%))
-                
+    overflow-x: hidden
             
-    #musthead
-        position: absolute
-        top: 0
-        width: 100%
-        height: 100vh
-        z-index: -1
-        +gradient($theme, darken($theme,15))
-        
+    
+    //=================================================================================================================== MENU BAR
     .main-menu
         .navbar
             background: $black
+            +radius(0)
+            +screen(sm)
+                background: $theme
+                +screen(md)
+                    background: transparent
+                    border: none
+                    border-color: transparent
+                #header_menu
+                    .navbar-nav
+                        & > li > a
+                            color: $white
+                            &:hover
+                                background-color: rgba($black, .35)
+                        & > .active > a
+                            color: $yellow
             .navbar-header
                 .navbar-toggle
                     .icon-bar
@@ -84,49 +72,103 @@ body
                     & > .active > a
                         color: $yellow
                     .dropdown-menu
+                        & > .active > a
+                            background-color: $theme
                         li
-                            margin-left: 20px !important
+                            margin-left: 20px
                             a
                                 padding-left: 20px
                                 color: $white
                                 & > .caret
                                     margin-left: 8px
-                            +screen(xs)
+                            +screen(sm)
                                 margin-left: inherit
                                 a
                                     color: $black
-            +screen(sm)
-                background: transparent
-                border: none
-                border-color: transparent
-                +radius(0)
-                
-                #header_menu
-                    .navbar-nav
-                        & > li > a
-                            color: $white
-                            &:hover
-                                background-color: rgba($black, .35)
-                        & > .active > a
-                            color: $yellow
-    .bg-img-float
+            
+    
+    //=================================================================================================================== MUSTHEAD
+    #musthead
         position: absolute
-        display: none
-        width: 800px
-        height: 800px
-        overflow: hidden
-        background-color: darken($white, 10)
-        +radius(20%)
+        top: 0
+        width: 100%
+        height: 100vh
         z-index: -1
-        .wrapper
-            position: absolute
+        +gradient($theme, darken($theme,15))
+    
+    //=================================================================================================================== IMG FLOAT
+    .bg-img-float
+        display: none
+    
+    
+    
+    
+    //=================================================================================================================== N-O-T-P-A-G-E-H-O-M-E       
+    &:not(.page-home)
+    
+        //=============================================================================================================== THE TITLE       
+        .the-title
+            margin: 15px
             display: block
-            width: 100%
-            height: 100%
-            +transform(rotate(-25deg) scale(1.5))
-            img
+            +screen(sm)
+                font-size: 7em
+                font-weight: 700
+                span
+                    display: block
+                    &:last-child:after
+                        content: ' -'
+         
+        //=============================================================================================================== MUSTHEAD       
+        #musthead
+            display: none
+        
+        //=============================================================================================================== IMG FLOAT
+        .bg-img-float
+            position: absolute
+            display: none
+            width: 800px
+            height: 800px
+            overflow: hidden
+            background-color: darken($white, 10)
+            z-index: -1
+            +radius(20%)
+            +screen(md)
+                display: block
+                top: -20%
+                left: 50%
+                right: 0
+                +transform(rotate(25deg) translatex(-30%))
+            .wrapper
+                position: absolute
+                display: block
                 width: 100%
                 height: 100%
+                +transform(rotate(-25deg) scale(1.5))
+                img
+                    width: 100%
+                    height: 100%
+                
+    //=============================================================================================================== INTRO
+    .entry-content
+        #intro
+            margin: 50px 0
+            h3
+                font-style: oblique
+                text-transform: capitalize
+                padding-bottom: 15px
+                border-bottom: solid 2px darken($orange, 15)
+                margin-bottom: 0
+            p
+                font-family: $font-slab
+                font-style: italic
+                line-height: 1.7em
+                background: rgba($white, .35)
+                padding: 5em 15px
+                
+        
+    
+    
+    //=============================================================================================================== PAGE-HOME
     &.page-home
         .entry-content
             .the-title
@@ -166,6 +208,8 @@ body
                     &:hover
                         background-color: $blue
                         +transform(scale(2))
+                        
+            //=============================================================================================================== CAROUSEL MAIN 
             .carousel[id*="cptbc"]
                 +screen(xs)
                     overflow: hidden
@@ -180,10 +224,10 @@ body
                             .carousel-caption
                                 position: absolute
                                 top: 50%
-                                transform: translate(80%, -50%)
                                 width: 40%
                                 text-align: left
                                 max-height: 250px
+                                +transform(translate(80%, -50%))
                     .carousel-control
                         +opacity(0)
                         &.left
@@ -203,6 +247,7 @@ body
                         height: 100%
                         img
                         .carousel-caption
+                            
                             bottom: inherit
                 .carousel-control
                     background: transparent !important
@@ -214,7 +259,6 @@ body
                 text-transform: uppercase
             .post-display-item
                 background: $white
-                +transform(scale(.9))
                 +radius(4px)
                 .img-feature
                     img
@@ -229,11 +273,15 @@ body
                     display: inline-block
                     overflow: hidden
                     position: relative
+                    +transform(scale(.9))
+                    +box-shadow(0, 0, 3px, rgba($black, .35))
+                    &:hover
+                        cursor: pointer
+                        +transform(scale(1))
+                        +box-shadow(0, 0, 50px, rgba($black, .35))
         #highlight
             display: block
             background: darken($white, 5)
-            h2
-                display: block
             .post-display-item
                 padding: 10px
                 .img-feature
@@ -247,11 +295,9 @@ body
                     height: 335px
                     width: 29%
                     &:hover
-                        cursor: pointer
-                        +transform(scale(1))
-                        +box-shadow(0, 0, 8px, rgba($black, .3))
                         .img-feature
-                            +opacity(0.65)
+                            img
+                                +box-shadow(0, 0, 10px, rgba($black, .5))
                         .post-content > p
                             top: 0
                             background: $white
@@ -283,11 +329,10 @@ body
             margin: 15px
             text-align: center
             position: relative
-            .post-display-item
-                position: relative
             +screen(sm)
                 .post-display-item
                     margin: 0 -10px
+                    
                     +square(200px)
                     
                     .img-feature
@@ -302,16 +347,13 @@ body
                         bottom: -215px
                         padding: 15px
                         +centerer(true, false)
-                            
                     &:hover
                         z-index: 100
                         +transform(scale(1))
-                        +box-shadow(0, 0, 8px, rgba($black, .3))
                         .post-content
                             bottom: 0
                 +screen(md)
                     .post-display-item
-                        margin: 0 -13px
                         +square(260px)
                         .img-feature
                             +square(260px)
@@ -319,7 +361,6 @@ body
                             width: 260px
                     +screen(lg)
                         .post-display-item
-                            margin: 0 -15px
                             +square(300px)
                             .img-feature
                                 +square(300px)
@@ -335,170 +376,395 @@ body
                         +transform(scale(1.1))
                         +box-shadow(0, 0, 25px, rgba($black, .5))
             img
-                width: 100%
-                height: 100%
-                
+                +square(100%)
+    
+    //=============================================================================================================== PAGE-ABOUT
     &.page-about-us
         .entry-content
-            #intro
-                #about_intro
-                    h3
-                        font-style: oblique
-                        text-transform: capitalize
-                        color: darken($blue, 15)
-                        padding-bottom: 15px
-                        border-bottom: solid 2px darken($blue, 15)
-                        margin-bottom: 0
-                    p
-                        font-family: $font-slab
-                        font-style: italic
-                        line-height: 1.7em
-                        background: rgba($white, .35)
-                        padding: 15px
             #card
-                #profile_intro
+                .post-content > a
+                    text-align: center
+                    margin-left: 15px
+                    .icon
+                        font-size: 2em
+                        line-height: 2em
+                        display: inline-block
+                        width: 50px
+                +screen(sm)
+                    #profile_intro
+                        position: relative
+                        overflow: hidden
+                        background: rgba($black, .1)
+                        +radius(8px)
+                        .post-display-item
+                            height: 500px
+                            .post-content
+                                h3, h4, p, ul,
+                                    margin-left: 15px
+                                    text-transform: capitalize
+                                h4
+                                    top: 40px
+                                    font-style: italic
+                                    width: 100%
+                                ul
+                                    top: 100px
+                                    padding-left: 40px
+                                    li
+                                        margin-top: 15px
+                                
+                                p
+                                    position: absolute
+                                    overflow: hidden
+                                    z-index: -2
+                                    top: 60px
+                                    +square(500px)
+                                    +radius(20%)
+                                    +transform(rotate(25deg) translateX(55%))
+                                    img
+                                        z-index: -1
+                                        +square(100%)
+                                        +transform(rotate(-25deg) scale(1.3))
+            #profile_1
+                margin-top: 64px
+                .post-display-item
                     position: relative
+                    height: 190px
                     overflow: hidden
-                    background: rgba($black, .1)
+                    margin-bottom: 15px
+                    padding: 15px
+                    border: solid 1px darken($white, 5)
                     +radius(8px)
-                    .post-display-item
-                        height: 500px
-                        .post-content
-                            h3, h4, p, ul
-                                position: absolute
-                                padding: 15px
-                                text-transform: capitalize
-                            h3, h4
-                                color: $green
-                            h4
-                                top: 40px
-                                font-style: italic
-                                border-bottom: solid 1px $white
-                                width: 100%
-                            ul
-                                top: 100px
-                                padding-left: 40px
-                                li
-                                    margin-top: 15px
-                            p
+                    &:hover
+                        cursor: pointer
+                        background: darken($white, 5)
+                    .post-content
+                        position: absolute
+                        width: 95%
+                        height: 150px
+                        overflow: hidden
+                        p, h3, ul, img
+                            position: absolute
+                        p
+                            margin-top: 20px
+                            +square(100px)
+                            img
                                 overflow: hidden
-                                z-index: -2
-                                top: 60px
-                                +square(500px)
-                                +radius(20%)
-                                +transform(rotate(25deg) translateX(55%))
+                                +radius(50%)
+                                +square(100%)
+                        h3, ul
+                            display: block
+                            left: 140px
+                        h3
+                            height: 35px
+                            margin-top: 4px
+                        ul
+                            margin-top: 30px
+                            margin-left: -24px
+                        ul > li
+                            margin-top: 4px
+                            margin-bottom: 4px
+            #timeline
+                position: relative
+                margin: 72px auto
+                &:after
+                    content: ''
+                    position: absolute
+                    width: 6px
+                    background-color: darken($white, 10)
+                    top: 60px
+                    bottom: 0
+                    left: 50%
+                    margin-left: -6px
+                h2
+                    text-align: center
+                .tl-container
+                    padding: 10px 40px
+                    position: relative
+                    background-color: inherit
+                    width: 50%
+                    &:nth-child(even)
+                        left: 0
+                        .tl-content
+                            text-align: right
+                        &:after
+                            background-color: $orange
+                            border: 4px solid darken($orange, 5)
+                        &:before
+                            content: " "
+                            height: 0
+                            position: absolute
+                            top: 18px
+                            width: 0
+                            z-index: 1
+                            right: 30px
+                            border: medium solid darken($white, 5)
+                            border-width: 10px 0 10px 10px
+                            border-color: transparent transparent transparent darken($white, 5)
+                    &:nth-child(odd)
+                        left: 50%
+                        .tl-content
+                            text-align: left
+                        &:after
+                            background-color: $blue
+                            border: 4px solid darken($blue, 5)
+                        &:before
+                            content: " "
+                            height: 0
+                            position: absolute
+                            top: 18px
+                            width: 0
+                            z-index: 1
+                            left: 30px
+                            border: medium solid darken($white, 5)
+                            border-width: 10px 10px 10px 0
+                            border-color: transparent darken($white, 5) transparent transparent;
+                        &:after
+                            left: -16px
+                    &:after
+                        content: ''
+                        position: absolute
+                        right: -9px
+                        top: 15px
+                        z-index: 1
+                        +radius(50%)
+                        +square(25px)
+                .tl-content
+                    padding: 20px 10px;
+                    position: relative
+                    top: -20px
+                    border: solid 1px transparent
+                    +radius(6px)
+                +screen(xs)
+                    &:after
+                        top: 100px
+                    .tl-content
+                        padding: 20px 30px;
+                        height: 160px
+                        overflow: hidden
+                        &:hover
+                            top: -20px
+                            cursor: pointer
+                            background-color: $white
+                            border-color: darken($white, 5)
+                            +box-shadow(0, 10px, 40px, rgba($black, .1))
+                            
+    //=============================================================================================================== CORPORATE CULTURE, SERVICE CULTURE, PAGE OUTBOUNG
+    &.page-the-cmg
+        .carousel-indicators
+            li
+                text-indent: 0
+                padding: 4px 8px
+                margin: 0 25px
+                width: 114px
+                height: auto
+                background-color: $white
+                +radius(25px)
+                &.active
+                    color: $white
+                &:nth-child(1):before
+                    content: 'slide 1'
+                &:nth-child(2):before
+                    content: 'slide 2'
+    
+    &.page-corporate-culture,
+    &.page-service-culture,
+    &.page-outbound,
+    &.page-public-speaking,
+    &.page-gsa,
+    &.page-the-cmg
+        .entry-content
+            .scb-model
+                text-align: center
+                p
+                    padding: 20px
+                    img
+                        overflow: hidden
+                        +radius(50%)
+                        +square(100%)
+            .scb-carousel
+                padding: 0
+                +box-shadow(-50px, 0, 100px, rgba($black, .05))
+                .carousel-indicators
+                    li
+                        border-color: $theme
+                        &.active
+                            background-color: $theme
+                            
+                .carousel-control
+                    background-color: transparent
+                    display: none
+                    &.left,
+                    &.right
+                        background-image: none
+                .carousel-inner
+                    img
+                        width: 100%
+                        
+                    .carousel-caption
+                        color: $black
+                        max-height: 70%;
+                        +text-shadow(0,0,0, rgba($white, 0))
+                        h4
+                            text-transform: uppercase
+                            font-family: $font-condensed
+                        ul
+                            padding-left: 20px
+                            margin-top: 15px
+                            text-align: left
+            .top-consultant
+                .display-posts
+                    text-align: center
+                    padding: 5em 0
+                    +clearfix
+                    h2
+                        text-transform: uppercase
+                    .post-display-item
+                        +radius(29px)
+                        .post-content
+                            .img-feature
+                                margin: 0 auto 
+                                width: 200px
+                                height: 250px
+                                overflow: hidden
+                                +radius(29px)
                                 img
-                                    z-index: -1
-                                    +square(100%)
-                                    +transform(rotate(-25deg) scale(1.3))
-            #card > .row > .col-sm-6 > p
-                position: absolute
-                left: 50px
-                &:empty
-                    display: none !important
-                &:nth-child(3)
-                    top: 400px
-                &:nth-child(4)
-                    top: 450px
-                &:nth-child(5)
-                    top: 500px
-                .icon
+                                    height: 100%
+                                    width: 200px
+                                    object-fit: cover
+                            .consultant-name
+                                margin: 2em 0
+                    +screen(sm)
+                        height: 80vh
+                        h2
+                            margin-bottom: 2em
+                        .post-display-item
+                            display: inline-block
+                            overflow: hidden
+                            position: relative
+                            margin: 15px
+                            top: 0px
+                            &:hover
+                                cursor: pointer
+                                top: -2px
+                                .post-content
+                                    .img-feature
+                                        +box-shadow(0, 5px, 10px, rgba($black, .2))
+            .video-testimony
+                text-align: center
+                margin-bottom: 5em
+                +screen(md)
+                    height: 80vh
+                    margin-bottom: 0
+                h2
+                    text-transform: uppercase
+                    margin-bottom: 2em
+                .lightbox-gallery
                     display: inline-block
-                    font-size: 2em
-                    line-height: 2em
-                    margin-right: 12px
-                    width: 20px
+                    width: 100%
+                    +screen(md)
+                        max-width: 250px
+                    .video
+                        img
+                            +transform(scale(.99))
+                            +square(100%)
+                            &:hover
+                                +transform(scale(1))
+                                +box-shadow(0, 0, 10px, rgba($black, .35))
+            .image-gallery
+                +screen(sm)
+                    height: 80vh
+                h2
+                    text-transform: uppercase
+                    margin-bottom: 2em
+                .gallery
+                    background: darken($white, 5)
+                    .gallery-item
+                        display: block
+                        +screen(sm)
+                            display: inline-block
+                            margin: 1px
+                            width: calc(20% - 2px)
+                        .gallery-icon
+                            img
+                                border: none
+                                background-color: $purple
+                                +square(100%)
             
-                
+    
+    
+    
+    //=============================================================================================================== FOOTER
     footer
-        .sidebar
+        h2
+            color: $orange
+            margin-top: 10px
+        .footer-feature
             background: lighten($black, 15)
             color: $white
             padding: 15px 0
-            .es_widget_form
-                margin-bottom: 15px
-                input[type="email"]
-                    display: block
-                    width: 100%
-                    height: 34px
-                    padding: 6px 12px
-                    font-size: 14px
-                    color: $black
-                    background-color: $white
-                    background-image: none
-                    border: 1px solid darken($white, 25)
-                    +radius(4px)
-                    +box-shadow(1px, 1px, rgba($black, .75))
-                input[type="submit"]
-                    padding: 12px
-                    width: auto
-                    border-width: 1px
-                    +button-size(12px, 12px, 1em, 1em, 4px)
-                    +scb-button($theme)
-                .es_button
-                    padding: 0
-                    margin: 0
-                .es_msg
-                    color: $white
-                    padding: 12px
-                    +radius(8px)
-            .widget_text
-                .widget-title
-                    color: $orange
-                .socials
-                    
-                    li > a
-                        color: $white
-                        text-decoration: none
-                    li
-                        text-align: center
-                        overflow: hidden
-                        +radius(10%)
-                        +square(75px)
-                        &:hover
-                            background: $white
-                            .icon
-                                font-size: 4em
-                            .facebook
-                                color: #3B5998
-                            .instagram
-                                color: #8a3ab9
-                            .youtube
-                                color: #FF0000
-                    .icon
-                        font-size: 2.5em
-                        display: block
-                .map-location
+            .subscribe-news
+                #subscribe_form
+                input[type="text"]
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-top-left-radius: 25px;
+                    border-bottom-left-radius: 25px;
+                .tx-msg
+                    min-height: 1
                     background: $white
-                    color: lighten($black, 10)
-                    position: relative
-                    height: 250px
-                    overflow: hidden
-                    &:hover
-                        .location
-                            border-top-width: 8px
-                            bottom: -180px
-                    .map
-                        position: absolute
-                        display: block
-                        +square(100%)
-                        iframe
-                            height: calc(100% - 50px)
-                            width: 100%
-                            display: block
-                    .location
-                        position: absolute
-                        display: block
-                        background: $white
-                        width: 100%
-                        padding: 12px
-                        bottom: -187px
-                        border-top: solid 1px $orange
-                        height: 250px
-                        &:hover
-                            bottom: 0
-                        h3
-                            margin: 10px 0
+        .socials
+            li > a
+                color: $white
+                text-decoration: none
+            li
+                text-align: center
+                overflow: hidden
+                +radius(10%)
+                +square(75px)
+                &:hover
+                    background: $white
+                    .icon
+                        font-size: 4em
+                    .facebook
+                        color: #3B5998
+                    .instagram
+                        color: #8a3ab9
+                    .youtube
+                        color: #FF0000
+            .icon
+                font-size: 2.5em
+                display: block
+        .map-location
+            background: $white
+            color: lighten($black, 10)
+            position: relative
+            height: 250px
+            overflow: hidden
+            &:hover
+                .location
+                    border-top-width: 8px
+                    bottom: -180px
+            .map
+                position: absolute
+                display: block
+                +square(100%)
+                iframe
+                    height: calc(100% - 50px)
+                    width: 100%
+                    display: block
+            .location
+                position: absolute
+                display: block
+                background: $white
+                width: 100%
+                padding: 12px
+                bottom: -187px
+                border-top: solid 1px $orange
+                height: 250px
+                &:hover
+                    bottom: 0
+                h3
+                    margin: 10px 0
         .footer-menu
             background: $black
             padding: 20px 0 50px

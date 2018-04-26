@@ -19,7 +19,7 @@ function scb_styles() {
 	wp_register_style( 'custom', get_template_directory_uri(). '/scb_theme.css', $dependencies, false );
 	wp_enqueue_style( 'custom' );
 	
-	wp_register_style('roboto', 'https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab');
+	wp_register_style('roboto', 'https://fonts.googleapis.com/css?family=Hammersmith+One|Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab');
 	wp_enqueue_style('roboto');
 	
 	wp_enqueue_style( 'style', get_stylesheet_uri() );
@@ -56,15 +56,18 @@ add_action( 'wp_enqueue_scripts', 'scb_scripts' );
 // ------------------------------------------------------------------ REGISTER SIDEBAR WIDGET ------------------------------------------------------------------
 add_action('widgets_init', 'scb_sidebar_widget');
 function scb_sidebar_widget() {
-	register_sidebar(array(
-		'id'            => 'primary',
-		'name'          => __( 'Primary Sidebar' ),
-		'description'   => __( 'A short description of the sidebar.' ),
-		'before_widget' => '<div id="%1$s" class="col-sm-4 %2$s">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
-	));
+//	$pages = get_pages();
+//    foreach ( $pages as $page ) {
+		register_sidebar(array(
+			'id'            => 'primary-' . $page->ID,
+			'name'          => __( 'Primary Sidebar' ),
+			'description'   => __( 'Widget for page: ' . $page->post_title ),
+			'before_widget' => '<div id="%1$s" class="col-sm-4 %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		));
+	//}
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------
 

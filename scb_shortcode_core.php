@@ -131,7 +131,168 @@ add_action('init', function() {
 		)
 	);
 // ---------------------------------------------------------------------------------------------------------------- END SET UI FOR LIGHTBOX SHORTCODE
+
+
+
+
+
+
+//========================================
+// Tab Nav Bootstrap
+function scb_tabx($atts, $content){
+	$tabid='';
+	$tabclass = $atts['class'];
+	$tabmode = ' nav-tabs';
+	$tablia = ''; $tabCont = '';
 	
+	if($atts['id'] !=''){
+		$tabid = ' id="'.$atts['id'].'"'; 
+	}
+	
+	if($atts['mode'] !=''){
+		$tabmode = ' nav-'.$atts['mode']; 
+	}
+	
+	$menu = explode('[/tab_content]', $content);
+	$tabTitle='';
+	
+	for($i=0; $i<count($menu)-1;$i++){
+		$tabTitle = explode(':',explode(']',$menu[$i])[0])[1];
+		add_shortcode('content:'.str_replace(' ','',$tabTitle), 'tabMenuCont_sc');
+	}
+	
+	for($i=0; $i<count($menu)-1;$i++){
+		$tabTitle = explode(':',explode(']',$menu[$i])[0])[1];
+		$tabSCName = explode(']',$menu[$i])[0];
+		$renscName = '[tab_content:'.str_replace(' ','',$tabTitle);
+		$scName = str_replace($tabSCName, $renscName ,$menu[$i]);
+		$tablia .= '<li role="presentation" '.($i==0?'class="active"':'').'><a href="#dv'.$attrs['id'].'_'.$i.'" data-toggle="tab" role="tab" aria-expanded="true">'.$tabTitle.'</a></li>';
+		
+		$tabCont .= '<div id="dv'.$attrs['id'].'_'.$i.'" class="tab-pane '.($i==0?'active':'').'" >'.do_shortcode(trim($scName)).'</div>';
+	}
+	
+	$retVal = '<div'.$tabid.'><ul class="nav'.$tabmode.'">'.$tablia.'</ul><div class="tab-content">'.$tabCont.'</div></div>';
+	return $retVal;
+}
+add_shortcode('tabx', 'scb_tabx');
+
+//--------------------NAV TAB
+/*--------------------------------------------------------------------------------------
+		*
+		* bs_tabs
+		*
+		* @author Filip Stefansson
+		* @since 1.0
+		* Modified by TwItCh twitch@designweapon.com
+		* Now acts a whole nav/tab/pill shortcode solution!
+		*-------------------------------------------------------------------------------------*/
+	add_shortcode('tabs', 'scb_tabs')
+	function scb_tabs( $atts, $content = null ) {
+		if( isset( $GLOBALS['tabs_count'] ) )
+			$GLOBALS['tabs_count']++;
+		else
+			$GLOBALS['tabs_count'] = 0;
+		$GLOBALS['tabs_default_count'] = 0;
+		$atts = apply_filters('bs_tabs_atts',$atts);
+		$atts = shortcode_atts( array(
+				"type"    => false,
+				"xclass"  => false,
+				"data"    => false,
+				"name"    => false,
+		), $atts );
+		$ul_class  = 'nav';
+		$ul_class .= ( $atts['type'] )     ? ' nav-' . $atts['type'] : ' nav-tabs';
+		$ul_class .= ( $atts['xclass'] )   ? ' ' . $atts['xclass'] : '';
+		$div_class = 'tab-content';
+		// If user defines name of group, use that for ID for tab history purposes
+		if(isset($atts['name'])) {
+			$id = $atts['name'];
+		} else {
+			$id = 'custom-tabs-' . $GLOBALS['tabs_count'];
+		}
+		$data_props = $this->parse_data_attributes( $atts['data'] );
+		$atts_map = bs_attribute_map( $content );
+		// Extract the tab titles for use in the tab widget.
+		if ( $atts_map ) {
+			$tabs = array();
+			$GLOBALS['tabs_default_active'] = true;
+			foreach( $atts_map as $check ) {
+					if( !empty($check["tab"]["active"]) ) {
+							$GLOBALS['tabs_default_active'] = false;
+					}
+			}
+			$i = 0;
+			foreach( $atts_map as $tab ) {
+				$class  ='';
+				$class .= ( !empty($tab["tab"]["active"]) || ($GLOBALS['tabs_default_active'] && $i == 0) ) ? 'active' : '';
+				$class .= ( !empty($tab["tab"]["xclass"]) ) ? ' ' . esc_attr($tab["tab"]["xclass"]) : '';
+				if(!isset($tab["tab"]["link"])) {
+					$tab_id = 'custom-tab-' . $GLOBALS['tabs_count'] . '-' . md5( $tab["tab"]["title"] );
+				} else {
+					$tab_id = $tab["tab"]["link"];
+				}
+				$tabs[] = sprintf(
+					'<li%s><a href="#%s" data-toggle="tab" >%s</a></li>',
+					( !empty($class) ) ? ' class="' . $class . '"' : '',
+					sanitize_html_class($tab_id),
+					$tab["tab"]["title"]
+				);
+				$i++;
+			}
+		}
+		$output = sprintf(
+			'<ul class="%s" id="%s"%s>%s</ul><div class="%s">%s</div>',
+			esc_attr( $ul_class ),
+			sanitize_html_class( $id ),
+			( $data_props ) ? ' ' . $data_props : '',
+			( $tabs )  ? implode( $tabs ) : '',
+			sanitize_html_class( $div_class ),
+			do_shortcode( $content )
+		);
+		return apply_filters('bs_tabs', $output);
+	}
+	/*--------------------------------------------------------------------------------------
+		*
+		* bs_tab
+		*
+		* @author Filip Stefansson
+		* @since 1.0
+		*
+		*-------------------------------------------------------------------------------------*/
+	add_shortcode('tab', 'scb_tab')
+	function scb_tab( $atts, $content = null ) {
+		$atts = shortcode_atts( array(
+				'title'   => false,
+				'active'  => false,
+				'fade'    => false,
+				'xclass'  => false,
+				'data'    => false,
+				'link'    => false
+		), $atts );
+		if( $GLOBALS['tabs_default_active'] && $GLOBALS['tabs_default_count'] == 0 ) {
+				$atts['active'] = true;
+		}
+		$GLOBALS['tabs_default_count']++;
+		$class  = 'tab-pane';
+		$class .= ( $atts['fade']   == 'true' )                            ? ' fade' : '';
+		$class .= ( $atts['active'] == 'true' )                            ? ' active' : '';
+		$class .= ( $atts['active'] == 'true' && $atts['fade'] == 'true' ) ? ' in' : '';
+		$class .= ( $atts['xclass'] )                                      ? ' ' . $atts['xclass'] : '';
+		if(!isset($atts['link']) || $atts['link'] == NULL) {
+			$id = 'custom-tab-' . $GLOBALS['tabs_count'] . '-' . md5( $atts['title'] );
+		} else {
+			$id = $atts['link'];
+		}
+		$data_props = $this->parse_data_attributes( $atts['data'] );
+		return sprintf(
+			'<div id="%s" class="%s"%s>%s</div>',
+			sanitize_html_class($id),
+			esc_attr( trim($class) ),
+			( $data_props ) ? ' ' . $data_props : '',
+			do_shortcode( $content )
+		);
+	}
+//================= TAB	
 
 	
 	

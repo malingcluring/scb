@@ -107,7 +107,7 @@
 		
 		return '<div id="' .$post_id. '" class="display-posts">' .$temp. '</div>';
 	}
-	
+	// ful post
 	add_shortcode('post_full', 'scb_post_full');
 	function scb_post_full($atts, $content=null){
 		$atts = shortcode_atts(array(
@@ -139,14 +139,58 @@
 				
 				$display .= '<div class="post-display-item">'
 							. '<div class="post-content">'
-							. 	'<h3>' .get_the_title(). '</h3>'
-							. 	'<p>' .get_the_content(). '</p>'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
 							. '</div></div>';
 			}
 		}
 		wp_reset_postdata();
 		
 		return '<div id="' .$post_id. '" class="display-posts">' .$display. '</div>';
+	}
+	
+	// thumbnail post only
+	add_shortcode('post_thumb', 'scb_post_thumb');
+	function scb_post_thumb($atts, $content=null){
+		$atts = shortcode_atts(array(
+			'category' => '',
+			'post_id' => '',
+			'title' => false,
+		), $atts, 'post');
+		
+		$post_id = ($atts['post_id']) ? ' id="' .$atts['post_id']. '"' : '';
+		$category = $atts['category'];
+		$title = ($atts['title']) ? '<h2>' .$atts['title']. '</h2>' : '';
+		
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<div class="img-feature">' .get_the_post_thumbnail($id, 'thumbnail'). '</div>'
+							. 	'<p class="consultant-name"><a href="' .get_permalink(). '">' .get_the_title(). '</a></p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div ' .$post_id. ' class="display-posts">' .$title.$display. '</div>';
 	}
 // ---------------------------------------------------------------------------------------------------------------- END POST SHORTCODE
 
@@ -216,142 +260,142 @@
 	
 // ---------------------------------------------------------------------------------------------------------------- REWRITE IMAGE GALLERY
 // ---------------------------------------------------------------------------------------------------------------- REMOVE ORIGINAL BUILD GALLERY SHORTCODER
-remove_shortcode('gallery', 'gallery_shortcode');
+//remove_shortcode('gallery', 'gallery_shortcode');
 
 // ---------------------------------------------------------------------------------------------------------------- REPLACE WITH SCB GALLERY SHORTCODE
-add_shortcode('gallery', 'scb_gallery');
-function scb_gallery($attr) {
-    $post = get_post();
-
-    static $instance = 0;
-    $instance++;
-
-    if (!empty($attr['ids'])) {
-        if (empty($attr['orderby'])) {
-            $attr['orderby'] = 'post__in';
-        }
-        $attr['include'] = $attr['ids'];
-    }
-
-    $output = apply_filters('post_gallery', '', $attr);
-
-    if ($output != '') {
-        return $output;
-    }
-
-    if (isset($attr['orderby'])) {
-        $attr['orderby'] = sanitize_sql_orderby($attr['orderby']);
-        if (!$attr['orderby']) {
-            unset($attr['orderby']);
-        }
-    }
-
-    extract(shortcode_atts(array(
-        'order' => 'ASC',
-        'orderby' => 'menu_order ID',
-        'id' => $post->ID,
-        'itemtag' => '',
-        'icontag' => '',
-        'captiontag' => '',
-        'columns' => 3,
-        'size' => 'thumbnail',
-        'include' => '',
-        'link' => '',
-        'exclude' => ''
-                    ), $attr));
-
-    $id = intval($id);
-
-    if ($order === 'RAND') {
-        $orderby = 'none';
-    }
-
-    if (!empty($include)) {
-        $_attachments = get_posts(array('include' => $include, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby));
-
-        $attachments = array();
-        foreach ($_attachments as $key => $val) {
-            $attachments[$val->ID] = $_attachments[$key];
-        }
-    } elseif (!empty($exclude)) {
-        $attachments = get_children(array('post_parent' => $id, 'exclude' => $exclude, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby));
-    } else {
-        $attachments = get_children(array('post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby));
-    }
-
-    if (empty($attachments)) {
-        return '';
-    }
-
-    if (is_feed()) {
-        $output = "\n";
-        foreach ($attachments as $att_id => $attachment) {
-            $output .= wp_get_attachment_link($att_id, $size, true) . "\n";
-        }
-        return $output;
-    }
-
-    //Bootstrap Output Begins Here
-    //Bootstrap needs a unique carousel id to work properly. Because I'm only using one gallery per post and showing them on an archive page, this uses the $post->ID to allow for multiple galleries on the same page.
-
-    $output .= '<div id="carousel-' . $post->ID . '" class="carousel slide" data-ride="carousel">'; 
-    $output .= '<!-- Indicators -->';
-    $output .= '<ol class="carousel-indicators">';
-
-    //Automatically generate the correct number of slide indicators and set the first one to have be class="active".
-    $indicatorcount = 0;
-    foreach ($attachments as $id => $attachment) {
-        if ($indicatorcount == 1) {
-            $output .= '<li data-target="#carousel-' . $post->ID . '" data-slide-to="' . $indicatorcount . '" class="active"></li>';
-        } else {
-            $output .= '<li data-target="#carousel-' . $post->ID . '" data-slide-to="' . $indicatorcount . '"></li>';
-        }
-        $indicatorcount++;
-    }
-
-    $output .= '</ol>';
-    $output .= '<!-- Wrapper for slides -->';
-    $output .= '<div class="carousel-inner">';
-    $i = 0;
-
-    //Begin counting slides to set the first one as the active class
-    $slidecount = 1;
-    foreach ($attachments as $id => $attachment) {
-        $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
-
-        if ($slidecount == 1) {
-            $output .= '<div class="item active">';
-        } else {
-            $output .= '<div class="item">';
-        }
-
-        $image_src_url = wp_get_attachment_image_src($id, $size);
-        $output .= '<img src="' . $image_src_url[0] . '">';
-        $output .= '    </div>';
-
-
-        if (trim($attachment->post_excerpt)) {
-            $output .= '<div class="caption">' . wptexturize($attachment->post_excerpt) . '</div>';
-        }
-
-        $slidecount++;
-    }
-
-    $output .= '</div>';
-    $output .= '<!-- Controls -->';
-    $output .= '<a class="left carousel-control" href="#carousel-' . $post->ID . '" data-slide="prev">';
-    $output .= '<span class="glyphicon glyphicon-chevron-left"></span>';
-    $output .= '</a>';
-    $output .= '<a class="right carousel-control" href="#carousel-' . $post->ID . '" data-slide="next">';
-    $output .= '<span class="glyphicon glyphicon-chevron-right"></span>';
-    $output .= '</a>';
-    $output .= '</div>';
-    $output .= '</dl>';
-    $output .= '</div>';
-
-    return $output;
-	
-}
+//add_shortcode('gallery', 'scb_gallery');
+//function scb_gallery($attr) {
+//    $post = get_post();
+//
+//    static $instance = 0;
+//    $instance++;
+//
+//    if (!empty($attr['ids'])) {
+//        if (empty($attr['orderby'])) {
+//            $attr['orderby'] = 'post__in';
+//        }
+//        $attr['include'] = $attr['ids'];
+//    }
+//
+//    $output = apply_filters('post_gallery', '', $attr);
+//
+//    if ($output != '') {
+//        return $output;
+//    }
+//
+//    if (isset($attr['orderby'])) {
+//        $attr['orderby'] = sanitize_sql_orderby($attr['orderby']);
+//        if (!$attr['orderby']) {
+//            unset($attr['orderby']);
+//        }
+//    }
+//
+//    extract(shortcode_atts(array(
+//        'order' => 'ASC',
+//        'orderby' => 'menu_order ID',
+//        'id' => $post->ID,
+//        'itemtag' => '',
+//        'icontag' => '',
+//        'captiontag' => '',
+//        'columns' => 3,
+//        'size' => 'thumbnail',
+//        'include' => '',
+//        'link' => '',
+//        'exclude' => ''
+//                    ), $attr));
+//
+//    $id = intval($id);
+//
+//    if ($order === 'RAND') {
+//        $orderby = 'none';
+//    }
+//
+//    if (!empty($include)) {
+//        $_attachments = get_posts(array('include' => $include, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby));
+//
+//        $attachments = array();
+//        foreach ($_attachments as $key => $val) {
+//            $attachments[$val->ID] = $_attachments[$key];
+//        }
+//    } elseif (!empty($exclude)) {
+//        $attachments = get_children(array('post_parent' => $id, 'exclude' => $exclude, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby));
+//    } else {
+//        $attachments = get_children(array('post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby));
+//    }
+//
+//    if (empty($attachments)) {
+//        return '';
+//    }
+//
+//    if (is_feed()) {
+//        $output = "\n";
+//        foreach ($attachments as $att_id => $attachment) {
+//            $output .= wp_get_attachment_link($att_id, $size, true) . "\n";
+//        }
+//        return $output;
+//    }
+//
+//    //Bootstrap Output Begins Here
+//    //Bootstrap needs a unique carousel id to work properly. Because I'm only using one gallery per post and showing them on an archive page, this uses the $post->ID to allow for multiple galleries on the same page.
+//
+//    $output .= '<div id="carousel-' . $post->ID . '" class="carousel slide" data-ride="carousel">'; 
+//    $output .= '<!-- Indicators -->';
+//    $output .= '<ol class="carousel-indicators">';
+//
+//    //Automatically generate the correct number of slide indicators and set the first one to have be class="active".
+//    $indicatorcount = 0;
+//    foreach ($attachments as $id => $attachment) {
+//        if ($indicatorcount == 1) {
+//            $output .= '<li data-target="#carousel-' . $post->ID . '" data-slide-to="' . $indicatorcount . '" class="active"></li>';
+//        } else {
+//            $output .= '<li data-target="#carousel-' . $post->ID . '" data-slide-to="' . $indicatorcount . '"></li>';
+//        }
+//        $indicatorcount++;
+//    }
+//
+//    $output .= '</ol>';
+//    $output .= '<!-- Wrapper for slides -->';
+//    $output .= '<div class="carousel-inner">';
+//    $i = 0;
+//
+//    //Begin counting slides to set the first one as the active class
+//    $slidecount = 1;
+//    foreach ($attachments as $id => $attachment) {
+//        $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
+//
+//        if ($slidecount == 1) {
+//            $output .= '<div class="item active">';
+//        } else {
+//            $output .= '<div class="item">';
+//        }
+//
+//        $image_src_url = wp_get_attachment_image_src($id, $size);
+//        $output .= '<img src="' . $image_src_url[0] . '">';
+//        $output .= '    </div>';
+//
+//
+//        if (trim($attachment->post_excerpt)) {
+//            $output .= '<div class="caption">' . wptexturize($attachment->post_excerpt) . '</div>';
+//        }
+//
+//        $slidecount++;
+//    }
+//
+//    $output .= '</div>';
+//    $output .= '<!-- Controls -->';
+//    $output .= '<a class="left carousel-control" href="#carousel-' . $post->ID . '" data-slide="prev">';
+//    $output .= '<span class="glyphicon glyphicon-chevron-left"></span>';
+//    $output .= '</a>';
+//    $output .= '<a class="right carousel-control" href="#carousel-' . $post->ID . '" data-slide="next">';
+//    $output .= '<span class="glyphicon glyphicon-chevron-right"></span>';
+//    $output .= '</a>';
+//    $output .= '</div>';
+//    $output .= '</dl>';
+//    $output .= '</div>';
+//
+//    return $output;
+//	
+//}
 // ---------------------------------------------------------------------------------------------------------------- END SCB GALLERY
 
 
@@ -360,15 +404,15 @@ function scb_gallery($attr) {
 	function scb_lightbox($atts, $content=null) {
 		
 		$atts = shortcode_atts(array(
-			'id' => '',
-			'class' => '',
-			'vdid' => '',
+			'ids' => false,
+			'xclass' => false,
+			'vdid' => 'test',
 			'caption' => '',
 		), $atts);
 		
 		$result = '';
-		$id = ($atts['id']) ? 'id="' .$atts['id']. '"' : '';
-		$class = ($atts['class']) ? $atts['class'] : '';
+		$id = ($atts['ids']) ? 'id="' .$atts['ids']. '"' : '';
+		$class = ($atts['xclass']) ? $atts['xclass'] : '';
 		$vidid = 'https://www.youtube.com/watch?v=' .$atts['vdid'];
 		$vThumb = 'http://img.youtube.com/vi/' .$atts['vdid']. '/mqdefault.jpg';
 		$caption = $atts['caption'];
@@ -381,6 +425,38 @@ function scb_gallery($attr) {
 		
 		return $result;
 	}
+	
+	// shortcake lightbox
+	shortcode_ui_register_for_shortcode(
+		'lightbox',
+		array(
+			'label' => 'Lightbox',
+			'listItemImage' => 'dashicons-video-alt3',
+			'attrs' => array(
+				array(
+					'label' => 'Add Video ID',
+					'atts' => 'vdid',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Add ID',
+					'atts' => 'ids',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Add class',
+					'atts' => 'xclass',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Add Caption',
+					'atts' => 'caption',
+					'type' => 'text',
+				),
+			),
+			'post_type' => array('post', 'page'),
+		)
+	);
 // ---------------------------------------------------------------------------------------------------------------- END LIGHTBOX SHORTCODE
 
 // POST SELECT SHORTCODE
@@ -418,14 +494,20 @@ function card($atts, $content=null) {
 add_shortcode('container', 'scb_container');
 function scb_container($atts, $content=null) {
 	$atts = shortcode_atts(array(
-		'ids' => '',
+		'ids' => false,
 	), $atts);
-	
-	return '<div id="' .$atts['ids']. '" class="container"><div class="row">' .do_shortcode($content). '</div></div>';
+	$id = ($atts['ids']) ? 'id="' .$atts['ids']. '"' : '';
+	return '<div ' .$id. '" class="container"><div class="row">' .do_shortcode($content). '</div></div>';
 }
 add_shortcode('colspan', 'scb_colspan');
 function scb_colspan($atts, $content=null) {
-	return '<div class="col-sm-' .$atts['size']. '">' .do_shortcode($content). '</div>';
+	$atts = shortcode_atts(array(
+		'ids' => false,
+		'size' => '',
+		'xclass' => '',
+	), $atts);
+	$id = ($atts['ids']) ? 'id="' .$atts['ids']. '"' : '';
+	return '<div ' .$id. ' class="' .$atts['xclass']. ' col-sm-' .$atts['size']. '">' .do_shortcode($content). '</div>';
 }
 // container shortcode
 
@@ -436,15 +518,13 @@ function scb_icon($atts, $content=null) {
 	
 	$atts = shortcode_atts(array(
 		'name' => '',
-		'text' => '',
-		'link' => '',
+		'text' => false,
+		'link' => false,
 	), $atts);
+	$text = ($atts['text']) ? '<span>' .$atts['text']. '</span></a>' : '';
+	$display = ($atts['link']) ? '<a href="' .$atts['link']. '" target="_blank"><span class="icon"><i class="fa fa-' .$atts['name']. '"></i></span>' .$text. '</a>' : '<span class="icon"><i class="fa fa-' .$atts['name']. '"></i></span>' .$text ;
 	
-	return '<a href="' .$atts['link']. '" target="_blank">'
-			. '<span class="icon">'
-			. 	'<i class="fa fa-' .$atts['name']. '"></i>'
-			. '</span>'
-			. '<span>' .$atts['text']. '</span></a>';
+	return $display;
 }
 // end FA
 
@@ -493,14 +573,43 @@ add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
 	
 // SHORTCAKE
 // ---------------------------------------------------------------------------------------------------------------- SET UI FOR POST CATEGORY
+	// ---------------------------------------------------------------------------------------------------------------- SET UI FOR FULL POST CATEGORY
 	shortcode_ui_register_for_shortcode(
 		'post_full',
 		array(
-			'label' => 'Choose Post Category',
+			'label' => 'POST FULL',
 			'listItemImage' => 'dashicons-media-default',
 			'attrs' => array(
 				array(
-					'label' => 'Post Category',
+					'label' => 'Post Full',
+					'attr' => 'category',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+				array(
+					'label' => 'ID',
+					'attr' => 'post_id',
+					'type' => 'text',
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+	
+	// ---------------------------------------------------------------------------------------------------------------- SET UI FOR THUMBNAIL POST ONLY
+	shortcode_ui_register_for_shortcode(
+		'post_thumb',
+		array(
+			'label' => 'POST THUMBNAIL ONLY',
+			'listItemImage' => 'dashicons-media-default',
+			'attrs' => array(
+				array(
+					'label' => 'TITLE',
+					'attr' => 'title',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Post Thumbnail',
 					'attr' => 'category',
 					'type' => 'select',
 					'options' => $arrcategories,
@@ -519,7 +628,7 @@ add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
 	shortcode_ui_register_for_shortcode(
 		'post',
 		array(
-			'label' => 'Choose Post Category',
+			'label' => 'TEXT POST WITH THUMBNAIL',
 			'listItemImage' => 'dashicons-media-default',
 			'attrs' => array(
 				array(
@@ -580,6 +689,82 @@ add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
 	);
 				
 // ---------------------------------------------------------------------------------------------------------------- END FONT AWESOME
+
+
+
+// TIMELINE SHORTCODE
+add_shortcode('timeline', 'scb_timeline');
+function scb_timeline($attr, $content=null) {
+	$atts = shortcode_atts(array(
+		'category' => '',
+	), $atts, 'timeline');
 	
+	$category = $attr['cat'];
+	
+	$args = array(
+		'post_type' 		=> 'post',
+		'orderby' 			=> 'date',
+		'order' 			=> 'DESC',
+		'cat'         		=> $category,
+		'update_post_term_cache' => false,
+		'update_post_meta_cache' => false,
+		'paged' 			=> get_query_var('paged'),
+		'nopaging' 			=> true,
+		'post_parent' 		=> $parent,
+	);
+	$return_string = '';
+	$query = new WP_Query( $args );
+	if( $query->have_posts() ){
+		while( $query->have_posts() ){
+			$query->the_post();
+			$return_string .= '<div class="tl-container"><div class="tl-content">'
+							   . '<h4><a href="'.get_permalink().'">'.get_the_title().'</a></h4>'
+							   . '<div class="tl-story">' .wp_trim_words(get_the_content(), 20, '...'). '</div>'
+							   . '</div></div>';
+		}
+	}
+	wp_reset_query();
+	return '<h2>Our Achievement</h2> ' .$return_string;
+}
+shortcode_ui_register_for_shortcode(
+	'timeline',
+	array(
+		'label' => 'TIMELINE',
+		'listItemImage' => 'dashicons-media-default',
+		'attrs' => array(
+			array(
+				'label' => 'Add The Timeline',
+				'attr' => 'cat',
+				'type' => 'select',
+				'options' => $arrcategories,
+			),
+		),
+		'post_type' => array( 'post', 'page' ),
+	)		
+);
+
+
+
+
+// =========================== ROW
+add_shortcode('row', 'scb_row');
+function scb_row($atts, $content=null) {
+	$ats = shortcode_atts(array(
+		'id' => false,
+		'class' => false,
+	), $atts, 'row');
+	
+	$id= ($atts['id']) ? ' id="' .$atts['id']. '"' : '';
+	
+	return '<div' .$id. ' class="row ' .$atts['class']. '">' .do_shortcode($content). '</div>';
+}
+
+
+
+
+
+
+
+
 	
 ?>

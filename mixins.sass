@@ -30,7 +30,11 @@
 		// Log a warning.
 		@warn 'Invalid breakpoint: #{$breakpoint}.'
 	
-
+=truncate($width)
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+    width: $width
 
 
 
@@ -500,4 +504,14 @@ $container-lg:              $container-large-desktop !default
         right: percentage(($columns / $grid-columns))
   
 
+  
+// RANDOM COLOR
+=random-color($selector)
+    #{$selector}: unquote("#{random(256) - 1}, #{random(256)-1}, #{random(256 - 1)}, #{random(100)/100})")
+    
+//@for $i from 1 to 10 
+//    .bg-color-#{i} 
+//        @include random-color('background-color')
+
+  
   

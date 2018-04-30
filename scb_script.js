@@ -65,7 +65,7 @@ $(document).ready(function() {
 	$('.gallery').each(function(){
 		$(this).removeAttr('id');
 		if($(this).find('img')){
-			$('img').removeAttr('width height sizes class alt');
+			$('img').removeAttr('width height sizes class alt srcset');
 			$('img').css('border', 'none');
 		}
 		

@@ -113,7 +113,7 @@
 		$atts = shortcode_atts(array(
 			'category' => '',
 			'post_id' => '',
-		), $atts, 'post');
+		), $atts, 'post_full');
 		
 		$post_id = $atts['post_id'];
 		$category = $atts['category'];
@@ -156,7 +156,7 @@
 			'category' => '',
 			'post_id' => '',
 			'title' => false,
-		), $atts, 'post');
+		), $atts, 'post_thumb');
 		
 		$post_id = ($atts['post_id']) ? ' id="' .$atts['post_id']. '"' : '';
 		$category = $atts['category'];
@@ -758,6 +758,61 @@ function scb_row($atts, $content=null) {
 	
 	return '<div' .$id. ' class="row ' .$atts['class']. '">' .do_shortcode($content). '</div>';
 }
+
+
+// -------------------------------- NEWS SCORTCODE
+	add_shortcode('post_news', 'scb_post_news');
+	function scb_post_news($atts, $content=null){
+		$atts = shortcode_atts(array(
+			'cat' => ''
+		), $atts, 'post_news');
+		
+		$category = $atts['cat'];
+		
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$news = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$news .= '<div class="news-content">'
+						. '<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+						.do_shortcode(get_the_content(), $content).'</div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return $news;
+	}
+	
+	shortcode_ui_register_for_shortcode(
+		'post_news',
+		array(
+			'label' => 'NEWS',
+			'listItemImage' => 'dashicons-media-default',
+			'attrs' => array(
+				array(
+					'label' => 'Add THE HOTTEST NEWS',
+					'attr' => 'cat',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
 
 
 

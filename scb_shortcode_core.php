@@ -435,4 +435,31 @@ add_shortcode('tabx', 'scb_tabx');
 });
 // ---------------------------------------------------------------------------------------------------------------- END SHORTCAKE ----------------------------------------------------------------------------------------------------------------
 
+
+
+?>
+
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-md-9">
+            <div class="panel panel-default text-center">
+                <?php $loop = new WP_Query( array( 'post_type' => 'items', 'posts_per_page' => 5 ) ); ?>                        
+
+                        <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
+                            <?php the_title();?>
+                            <?php if(has_post_thumbnail() ) { the_post_thumbnail(); } ?>
+                            <?php the_content();?>
+                        <?php endwhile; ?>
+
+                <?php wp_reset_query(); ?>                      
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<?php
 ?>

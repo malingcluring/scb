@@ -8,34 +8,21 @@
 	</div>
 </div>
 
+<!--news page-->
+<div class="news-main-image">
+	<?php
+		if ( has_post_thumbnail() ) {
+			the_post_thumbnail();
+		} 
+	?>
+</div>
 
 <!--blog content-->
 <div class="entry-content">
-<h1 class="the-title">
-	<?php
-		//the_title();
-		//$title2 = the_title();
-		echo str_replace(' ', '<span>', get_the_title());
-		/*
-		$title2 =  get_the_title();
-		$xStr = preg_split('/ +/', $title2);
-		$cStr2 = count($xStr);
-		$result2 = "";
-		if($cStr2 > 1){
-			for($i=0; $i<$cStr2-1;$i++){
-				$result2 .= $xStr[$i]." ";
-			}
-			$result2 .= "<span>".$xStr[$cStr2-1];
-		} else if ($cStr2 == 0) {
-			$result2 = $title2;
-		} else {
-			$result2 = $xStr[0]."<span>".$xStr[1];
-		}
-		echo $result2;
-		*/
-	?>
-</h1>
-<?php the_content(); ?>
+	<h1 class="the-title">
+		<?php echo str_replace(' ', '<span>', get_the_title()); ?>
+	</h1>
+	<?php the_content(); ?>
 </div>
 <?php
 	endwhile;
@@ -43,5 +30,95 @@
 	?>
 	
 <?php endif; ?>
+
+<!--====================================== CUSTOM POST ==========================-->
+<div class="container">
+
+    <div class="row">
+        <div id="custom_video_testimony">
+			<?php
+				$loop = new WP_Query( array(
+					'post_type' => 'video_testimony',
+					'posts_per_page' => 3
+				) );
+			?>                        
+
+				<?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
+					<?php if(has_post_thumbnail() ) { the_post_thumbnail(); } ?>
+					<?php the_content();?>
+				<?php endwhile; ?>
+				
+				<div class="nav-previous alignleft"><?php next_posts_link( 'Older posts' ); ?></div>
+				<div class="nav-next alignright"><?php previous_posts_link( 'Newer posts' ); ?></div>
+
+			<?php wp_reset_query(); ?>  
+        </div>
+    </div>
+	
+	<div class="row">
+		<div id="custom_text_testimony" class="carousel slide" data-ride="carousel">
+			<ul class="carousel-indicators">
+			<?php 
+				$loop = new WP_Query( array(
+					'post_type' => 'text_testimony',
+					'posts_per_page' => 3
+				) );
+				
+				$isActive;
+				$countr = 0;
+				$indicators = '';
+				
+				while ( $loop->have_posts() ) : $loop->the_post();
+					$isActive = ($countr==0?'active':'');
+					$indicators.='<li data-target="#custom_text_testimony" data-slide-to="' .$countr. '" data-val="' .$countr. '" class="' .$isActive. '"></li>';
+					$countr +=1;
+				endwhile;
+				
+				$indicators.='</ul><div class="carousel-inner" role="listbox">';
+				echo $indicators;
+				$countr = 0;
+				
+				while ( $loop->have_posts() ) : $loop->the_post();
+					$isActive = ($countr==0?'active':'');
+					echo '<div class="item '.$isActive.'">';
+						echo '<div class="user-img">';
+						if(has_post_thumbnail() ) { the_post_thumbnail(); }
+						echo '</div>';
+						echo '<div class="carousel-caption">';
+						echo '<blockquote>';
+						the_content();
+						echo '</blockquote>';
+						echo '<h4>';
+						the_title();
+						echo '</h4>';
+					echo '</div>';
+					echo '</div>';
+					$countr +=1;
+				endwhile;
+			?>
+			
+			<?php wp_reset_query(); ?>
+			</div>
+		</div>
+		
+	</div>
+	
+	<!--gallery-->
+	 <div class="row">
+        <div id="custom_gallery">
+			<?php
+				$id = 599;
+				$p = get_page($id);
+				echo apply_filters('the_content', $p->post_content);
+				?>
+        </div>
+    </div>
+	
+
+</div>
+	
+
+
+
 
 <?php get_footer(); ?>

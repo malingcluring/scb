@@ -97,7 +97,8 @@ body
         +gradient($theme, darken($theme,15))
     
     //=================================================================================================================== IMG FLOAT
-    .bg-img-float
+    .bg-img-float,
+    .news-main-image
         display: none
     
     
@@ -689,7 +690,30 @@ body
                                 border: none
                                 background-color: $purple
                                 +square(100%)
-            
+                                
+                                
+    // ========================= NEWS PAGE                            
+    &.page-news
+        .news-main-image
+            +screen(sm)
+                width: 100%
+                height: 100vh
+                display: block !important
+                margin-top: -72px
+                margin-bottom: 10em
+                img
+                    width: 100%
+                    height: 100%
+                    object-fit: none
+                    object-position: center center
+        .entry-content
+            h1.the-title
+                display: none
+            .news-content
+                padding: 0 15px
+                img
+                    display: block
+        
     
     
     
@@ -776,4 +800,118 @@ body
                     line-height: 48px
                 .footer-logo
                     float: right
+                    
+    
+                    
+                    
+                    
+                    
+                    
+                    
+    //---------------------------- CUSTOM POST
+    
+    // ---- DISPLAY NONE ON POST TYPE "PAGE"
+    &.page-template-default
+        #custom_video_testimony,
+        #custom_text_testimony,
+        #custom_gallery
+            display: none
             
+    // ----- DISPLAY BLOCK ONLY ON POST TYPE "POST"
+    &.post-template-default
+        .news-main-image
+            +screen(sm)
+                width: 100%
+                height: 100vh
+                display: block !important
+                margin-top: -72px
+                margin-bottom: 10em
+                img
+                    width: 100%
+                    height: 100%
+                    object-fit: none
+                    object-position: center center
+    
+    &.page-news,
+    &.post-template-default
+        #custom_video_testimony,
+        #custom_text_testimony,
+        #custom_gallery
+            display: block !important
+        
+    &.page-news,
+    &.post-template-default
+        #custom_video_testimony
+            margin-top: 3em
+            text-align: center
+            +screen(sm)
+                height: 35vh
+            .embed-responsive
+                margin: 12px auto
+                padding: 12px
+                height: 150px
+                width: 250px
+                +screen(sm)
+                    display: inline-block
+        #custom_text_testimony
+            margin: 40px 0
+            .item
+                height: 500px
+                +screen(sm)
+                    height: 35vh
+                .carousel-caption
+                    color: $black
+                    +text-shadow(0, 0, 0, $white)
+                    p
+                        &:nth-child(2)
+                            font-style: oblique
+                        &:nth-child(3)
+                            &:before,
+                            &:after
+                                content: " -- "
+                            
+                    h4
+                        font-style: oblique
+                    h5:before,
+                    h5:after
+                        content: " -- "
+                    blockquote
+                        border: none
+                        &:before
+                            content: "\f10d"
+                            font-size: 3em
+                            line-height: 3em
+                            font-family: "FontAwesome"
+            li
+                border-color: $black
+                padding: 0 12px
+                &.active
+                    background-color: $black
+                &:hover
+                    background-color: $blue
+                    +transform(scale(2))
+                    
+        // ----- IMAGE GALLERY
+        #custom_gallery
+            +screen(sm)
+                height: 80vh
+            h2
+                text-transform: uppercase
+                margin-bottom: 2em
+            .gallery
+                background: darken($white, 5)
+                .gallery-item
+                    display: block
+                    margin: 15px
+                    +screen(sm)
+                        display: inline-block
+                        margin: 1px
+                        width: calc(20% - 2px)
+                    .gallery-icon
+                        img
+                            border: none
+                            background-color: $purple
+                            +square(100%)
+                            
+    //=================================================================================================================== N-O-T-P-A-G-E-H-O-M-E       
+    

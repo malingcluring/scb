@@ -461,5 +461,36 @@ add_shortcode('tabx', 'scb_tabx');
     </div>
 
 </div>
+
+//============ post by category (alternative)
 <?php
+
+	$category_name = (get_query_var('category_name')) ? get_query_var('category_name') : 'uncategorized';
+	$posts_per_page = 3;
+	$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+	
+	$args = array(
+		'post_type' => 'post',
+		'post_status' => 'publish',
+		'category_name' => $category_name,
+		'posts_per_page' => $posts_per_page,
+		'paged' => $paged,
+	);
+	
+	$arr_posts = new WP_Query($args);
+	
+	if($arr_posts->have_posts()) :
+		while($arr_posts->have_posts()) :
+			$arr_posts->the_post(); ?>
+			<div id="post_id<?php the_ID(); ?>" <?php post_class(); ?> >
+				<?php
+				if(has_post_thumbnail()) : the_post_thumbnail();
+				endif; ?>
+				<h1 class="the-entry-title"><?php the_title(); ?></h1>
+				<div class="the-entry-content"><?php the_excerpt(); ?></div>
+			</div>
+<?php
+		endwhile;
+		WP_pagenavi(array('query' => $arr_posts));
+	endif;
 ?>

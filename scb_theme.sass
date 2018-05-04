@@ -37,22 +37,10 @@ body
     //=================================================================================================================== MENU BAR
     .main-menu
         .navbar
+            position: relative
             background: $black
+            z-index: 1000
             +radius(0)
-            +screen(sm)
-                background: $theme
-                +screen(md)
-                    background: transparent
-                    border: none
-                    border-color: transparent
-                #header_menu
-                    .navbar-nav
-                        & > li > a
-                            color: $white
-                            &:hover
-                                background-color: rgba($black, .35)
-                        & > .active > a
-                            color: $yellow
             .navbar-header
                 .navbar-toggle
                     .icon-bar
@@ -60,31 +48,63 @@ body
                 .navbar-brand
                     margin-left: 0
                     padding: 0 !important
+                    margin: 2px 0
             #header_menu
-                .nav
-                    .open > a
-                        background-color: transparent
-                        text-transform: uppercase
+                .navbar-nav
+                    text-transform: uppercase
                     & > li > a
                         color: $white
+                        +text_shadow(1px, 1px, 0px, $black)
                         &:hover
-                            background-color: rgba($black, .35)
+                            color: $yellow
+                            background: $theme
                     & > .active > a
                         color: $yellow
+                    .open > a
+                        background-color: transparent
+                        &:hover,
+                        &:focus
+                            background: $theme
                     .dropdown-menu
                         & > .active > a
                             background-color: $theme
-                        li
-                            margin-left: 20px
-                            a
-                                padding-left: 20px
-                                color: $white
-                                & > .caret
-                                    margin-left: 8px
-                            +screen(sm)
-                                margin-left: inherit
-                                a
-                                    color: $black
+                        li > a
+                            color: $white
+                            & > .caret
+                                margin-left: 8px
+                            &:hover,
+                            &:focus
+                                background: $theme
+                                color: $yellow
+                            
+            +screen(sm)
+                border: none
+                border-color: transparent
+                +gradient(rgba($black, .5), rgba($black, .0))
+                #header_menu
+                    .navbar-nav > li
+                        & > a
+                            color: $white
+                            margin: 7px 2px
+                            padding: 8px 15px
+                            +radius(25px)
+                            +screen(md)
+                            margin: 7px 10px
+                            &:hover,
+                            &:focus,
+                            &:active
+                                background-color: $black
+                        &.active > a
+                            color: $yellow
+                        &.open > a
+                            background-color: transparent
+                            text-transform: uppercase
+                        .dropdown-menu
+                            li > a
+                                color: $black
+                                
+                
+            
             
     
     //=================================================================================================================== MUSTHEAD
@@ -97,6 +117,7 @@ body
         +gradient($theme, darken($theme,15))
     
     //=================================================================================================================== IMG FLOAT
+    .maps,
     .bg-img-float,
     .news-main-image
         display: none
@@ -252,6 +273,7 @@ body
                             bottom: inherit
                 .carousel-control
                     background: transparent !important
+                    
         .display-posts
             text-align: center
             padding: 5em 0
@@ -285,14 +307,21 @@ body
             background: darken($white, 5)
             .post-display-item
                 padding: 10px
+                margin: 15px
                 .img-feature
-                    margin: 72px
+                    margin: 20px
                     img
                         display: block
                         +radius(50%)
+                .post-content
+                    p
+                        .btn
+                            margin: 20px auto
+                            width: 50%
                 
             +screen(sm)
                 .post-display-item
+                    margin: 0
                     height: 335px
                     width: 29%
                     &:hover
@@ -304,6 +333,7 @@ body
                             background: $white
                         .post-content > p > a
                             display: block
+                            
                     .post-content
                         position: relative;
                         height: 170px
@@ -313,8 +343,9 @@ body
                             top: 54px
                             padding: 10px
                             display: block
-                            a
-                                margin: 10px 0
+                            .btn
+                                margin-top: 10px
+                                width: 100%
                                 display: hidden
                     .img-feature
                         margin: 10px 24px
@@ -330,12 +361,22 @@ body
             margin: 15px
             text-align: center
             position: relative
+            .post-display-item
+                padding: 15px
+                .post-content
+                    p
+                        .btn
+                            margin: 15px auto
+                            width: 50%
             +screen(sm)
                 .post-display-item
                     margin: 0 -10px
-                    
                     +square(200px)
-                    
+                    &:hover
+                        z-index: 100
+                        +transform(scale(1))
+                        .post-content
+                            bottom: 0
                     .img-feature
                         +centerer(true, true)
                         +square(200px)
@@ -348,11 +389,6 @@ body
                         bottom: -215px
                         padding: 15px
                         +centerer(true, false)
-                    &:hover
-                        z-index: 100
-                        +transform(scale(1))
-                        .post-content
-                            bottom: 0
                 +screen(md)
                     .post-display-item
                         +square(260px)
@@ -378,6 +414,7 @@ body
                         +box-shadow(0, 0, 25px, rgba($black, .5))
             img
                 +square(100%)
+    
     
     //=============================================================================================================== PAGE-ABOUT
     &.page-about-us
@@ -549,7 +586,7 @@ body
                             border-color: darken($white, 5)
                             +box-shadow(0, 10px, 40px, rgba($black, .1))
                             
-    //=============================================================================================================== CORPORATE CULTURE, SERVICE CULTURE, PAGE OUTBOUNG
+    //=============================================================================================================== CORPORATE CULTURE, SERVICE CULTURE, PAGE OUTBOUNG, THE CMG
     &.page-the-cmg
         .carousel-indicators
             li
@@ -692,19 +729,19 @@ body
                                 +square(100%)
                                 
                                 
-    // ========================= NEWS PAGE                            
+    // =============================================================================================================== NEWS PAGE                            
     &.page-news
         .news-main-image
             +screen(sm)
                 width: 100%
                 height: 100vh
                 display: block !important
-                margin-top: -72px
-                margin-bottom: 10em
+                margin-top: -86px
+                margin-bottom: 5em
                 img
                     width: 100%
                     height: 100%
-                    object-fit: none
+                    object-fit: cover
                     object-position: center center
         .entry-content
             h1.the-title
@@ -715,6 +752,56 @@ body
                     display: block
         
     
+    // =============================================================================================================== PAGE-CONTACT US
+    &.page-contact-us
+        .bg-img-float
+            display: none
+        .maps
+            display: block
+            position: relative
+            top: -20px
+            +screen(sm)
+                top: -86px
+            iframe#google_map
+                top: 0
+                left: 0
+                width: 100%
+                height: 60vh
+        .contact-info
+            .addrs,
+            .socials
+                padding: 15px
+            .socials
+                li > a
+                    color: $theme
+                    text-decoration: none
+                li
+                    text-align: center
+                    overflow: hidden
+                    +radius(10%)
+                    +square(75px)
+                    &:hover
+                        background: $white
+                        .icon
+                            font-size: 4em
+                        .facebook
+                            color: #3B5998
+                        .instagram
+                            color: #8a3ab9
+                        .youtube
+                            color: #FF0000
+                .icon
+                    font-size: 2.5em
+                    display: block
+        +screen(sm)
+            .the-title,
+            .contact-info
+                float: left
+                margin: 15px
+            .contact-info
+                .addrs,
+                .socials
+                    display: inline-block
     
     
     //=============================================================================================================== FOOTER
@@ -808,10 +895,11 @@ body
                     
                     
                     
-    //---------------------------- CUSTOM POST
+    // //=============================================================================================================== CUSTOM POST
     
     // ---- DISPLAY NONE ON POST TYPE "PAGE"
     &.page-template-default
+        .custom-post-title-section,
         #custom_video_testimony,
         #custom_text_testimony,
         #custom_gallery
@@ -824,16 +912,17 @@ body
                 width: 100%
                 height: 100vh
                 display: block !important
-                margin-top: -72px
-                margin-bottom: 10em
+                margin-top: -86px
+                margin-bottom: 5em
                 img
                     width: 100%
                     height: 100%
-                    object-fit: none
+                    object-fit: cover
                     object-position: center center
     
     &.page-news,
     &.post-template-default
+        .custom-post-title-section,
         #custom_video_testimony,
         #custom_text_testimony,
         #custom_gallery
@@ -841,24 +930,39 @@ body
         
     &.page-news,
     &.post-template-default
-        #custom_video_testimony
-            margin-top: 3em
+        .custom-post-title-section
             text-align: center
+            margin-top: 5em
+            
+        #custom_video_testimony
+            margin-top: 6em
+            text-align: center
+            p
+                display: block
+                .video
+                    display: block
+                    min-width: 250px
+                    height: 150px
+                    padding: 0 15px
+                    .video-thumb
+                        object-fit: cover
+                        object-position: center center
+                        +square(100%)
             +screen(sm)
-                height: 35vh
-            .embed-responsive
-                margin: 12px auto
-                padding: 12px
-                height: 150px
-                width: 250px
-                +screen(sm)
+                p
                     display: inline-block
+                    .video
+                        display: block
+                        //width: 250px
+                        height: 150px
+                        .video-thumb
+                            object-fit: cover
+                            object-position: center center
+                            +square(100%)
         #custom_text_testimony
             margin: 40px 0
             .item
-                height: 500px
-                +screen(sm)
-                    height: 35vh
+                min-height: 400px
                 .carousel-caption
                     color: $black
                     +text-shadow(0, 0, 0, $white)
@@ -877,6 +981,8 @@ body
                         content: " -- "
                     blockquote
                         border: none
+                        max-height: 350px
+                        overflow: hidden
                         &:before
                             content: "\f10d"
                             font-size: 3em
@@ -893,8 +999,9 @@ body
                     
         // ----- IMAGE GALLERY
         #custom_gallery
+            margin: 5em 0
             +screen(sm)
-                height: 80vh
+                /*height: 80vh*/
             h2
                 text-transform: uppercase
                 margin-bottom: 2em
@@ -905,8 +1012,8 @@ body
                     margin: 15px
                     +screen(sm)
                         display: inline-block
-                        margin: 1px
-                        width: calc(20% - 2px)
+                        margin: 1px 1px 0 0
+                        width: calc(20% - 1px)
                     .gallery-icon
                         img
                             border: none

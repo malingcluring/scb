@@ -1,4 +1,7 @@
 <?php get_header(); ?>
+<div class="maps">
+	
+</div>
 
 <?php if( have_posts() ) : while( have_posts() ) : the_post(); ?>
 <!--post thumbnails-->
@@ -32,24 +35,24 @@
 <?php endif; ?>
 
 <!--====================================== CUSTOM POST ==========================-->
-<div class="container">
+<div id="custom_post" class="container">
+	<div class="row">
+		<h2 class="custom-post-title-section">TESTIMONIALS</h2>
+	</div>
 
     <div class="row">
         <div id="custom_video_testimony">
 			<?php
 				$loop = new WP_Query( array(
-					'post_type' => 'video_testimony',
+					'post_type' => 'post',
+					'category_name' => 'video-testimony',
 					'posts_per_page' => 3
 				) );
 			?>                        
 
 				<?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
-					<?php if(has_post_thumbnail() ) { the_post_thumbnail(); } ?>
 					<?php the_content();?>
 				<?php endwhile; ?>
-				
-				<div class="nav-previous alignleft"><?php next_posts_link( 'Older posts' ); ?></div>
-				<div class="nav-next alignright"><?php previous_posts_link( 'Newer posts' ); ?></div>
 
 			<?php wp_reset_query(); ?>  
         </div>
@@ -60,7 +63,8 @@
 			<ul class="carousel-indicators">
 			<?php 
 				$loop = new WP_Query( array(
-					'post_type' => 'text_testimony',
+					'post_type' => 'post',
+					'category_name' => 'text-testimony',
 					'posts_per_page' => 3
 				) );
 				
@@ -82,16 +86,16 @@
 					$isActive = ($countr==0?'active':'');
 					echo '<div class="item '.$isActive.'">';
 						echo '<div class="user-img">';
-						if(has_post_thumbnail() ) { the_post_thumbnail(); }
+							if(has_post_thumbnail() ) { the_post_thumbnail(); }
 						echo '</div>';
 						echo '<div class="carousel-caption">';
-						echo '<blockquote>';
-						the_content();
-						echo '</blockquote>';
-						echo '<h4>';
-						the_title();
-						echo '</h4>';
-					echo '</div>';
+							echo '<blockquote>';
+							the_content();
+							echo '</blockquote>';
+							echo '<h4>';
+								the_title();
+							echo '</h4>';
+						echo '</div>';
 					echo '</div>';
 					$countr +=1;
 				endwhile;
@@ -113,12 +117,6 @@
 				?>
         </div>
     </div>
-	
-
 </div>
-	
-
-
-
 
 <?php get_footer(); ?>

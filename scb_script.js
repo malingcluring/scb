@@ -2,8 +2,9 @@ $(document).ready(function() {
 	
 	$('p').each(function() {
 		var $this = $(this);
-		if($this.html().replace(/\s|&nbsp;/g, '').length == 0)
+		if($this.html().replace(/\s|&nbsp;/g, '').length == 0) {
 			$this.remove();
+		}
 	});
 	
 	var $container = '<div class="container"><div class="row"></div></div>';
@@ -31,16 +32,16 @@ $(document).ready(function() {
  
     // Initialize the Lightbox automatically for any links to images with extensions .jpg, .jpeg, .png or .gif
     $("a[href$='.jpg'], a[href$='.png'], a[href$='.jpeg'], a[href$='.gif']").fancybox({
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-		});
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
  
     // Initialize the Lightbox and add rel="gallery" to all gallery images when the gallery is set up using [gallery link="file"] so that a Lightbox Gallery exists
     $(".gallery a[href$='.jpg'], .gallery a[href$='.png'], .gallery a[href$='.jpeg'], .gallery a[href$='.gif']").attr('rel','gallery').fancybox();
@@ -70,5 +71,22 @@ $(document).ready(function() {
 		}
 		
 	});
-
+	
+	$('#custom_video_testimony p>a').each(function(){
+		$this = $(this);
+		$this.attr({
+			'data-fancybox' : 'gallery',
+			'class' : 'video fancybox.iframe',
+			'data-width' : '800',
+			'data-height' : '600'
+		});
+		$this.find('img').addClass('video-thumb');
+	});
+	
+	
+	// GOGGLE MAPS CONTACT US PAGE
+	var $maps = $('iframe#google_map').detach();
+	$('.maps').each(function(){
+		$(this).append($maps);
+	});
 });

@@ -25,8 +25,8 @@
 			@content		
 
 	// If the breakpoint doesn't exist in the map.
-	@else 
-
+	@else
+    
 		// Log a warning.
 		@warn 'Invalid breakpoint: #{$breakpoint}.'
 	
@@ -60,7 +60,7 @@
 /// @param {Color} $endColor [#999999] - End Color
 
 =gradient($startColor: $white, $endColor: $blue)
-	background-color: $startColor
+	background-color: $endColor
 	background-image: -webkit-gradient(linear, left top, left bottom, from($startColor), to($endColor))
 	background-image: -webkit-linear-gradient(top, $startColor, $endColor)
 	background-image: -moz-linear-gradient(top, $startColor, $endColor)

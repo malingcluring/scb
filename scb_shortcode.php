@@ -11,6 +11,8 @@
 		$arrcategories[$value] = $option_label;
 	endforeach;
 	
+	
+	
 	//------------------------- get all media gallery
 	$query_images_args = array(
 		'post_type'      => 'attachment',
@@ -555,7 +557,7 @@ function scb_carousel_testimony(  $atts , $content , $tag ) {
 		$slide .= '<div class="item '. $active.'"><div class="carousel-caption">'.$carCapsTxt[0].'</div></div>';
 	}
 
-	return '<div id="'.$atts['id'].'" class="carousel slide' .$atts['class']. '" data-ride="carousel">'
+	return '<div id="'.$atts['id'].'" class="carousel slide ' .$atts['class']. '" data-ride="carousel">'
 			. '<ul class="carousel-indicators">'.$indicators.'</ul>'
 			. '<div class="carousel-inner" role="listbox">'.$slide.'</div>'
 			. '</div>';
@@ -813,13 +815,116 @@ function scb_row($atts, $content=null) {
 			'post_type' => array( 'post', 'page' ),
 		)		
 	);
-
-
-
-
-
-
-
-
 	
+	
+	
+// ----------------------------------------------------------------- SHORTCODE PAGE CONTACT US
+// -------------------------------------------- GOOGLE MAPS
+	add_shortcode('google_map', 'scb_google_map');
+	function scb_google_map($atts) {
+		//$atts = shortcode_atts(array(
+		//	'lat' => '',
+		//	'lng' => ''
+		//), $atts, 'google_map');
+		return '<iframe id="google_map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.3098032638068!2d106.76153731538157!3d-6.353925995402027!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f79470fbf061%3A0x16db80805011ad07!2sPondok+Cabe+Golf+%26+Country+Club!5e0!3m2!1sen!2sid!4v1524024796248" frameborder="0" style="border:0" allowfullscreen></iframe>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'google_map',
+		array(
+			'label' => 'GOOGLE MAPS',
+			'listItemImage' => 'dashicons-location',
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+	
+// -------------------------------------------- CONTACT DETAIL
+	add_shortcode('contact', 'scb_contact');
+	function scb_contact($atts, $content=null) {
+		$atts = shortcode_atts(array(
+			'name' => '',
+			'building' => '',
+			'addrs' => '',
+			'email' => '',
+			'phone' => ''
+		), $atts, 'contact');
+		
+		$name = $atts['name'];
+		$building = ($atts['building']) ? $atts['building']. ' Building <br />' : '';
+		$addrs = ($atts['addrs']) ? $atts['addrs']. '<br />' : '';
+		$email = $atts['email'];
+		$phone = $atts['phone'];
+		
+		
+		return '<iframe id="google_map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.3098032638068!2d106.76153731538157!3d-6.353925995402027!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f79470fbf061%3A0x16db80805011ad07!2sPondok+Cabe+Golf+%26+Country+Club!5e0!3m2!1sen!2sid!4v1524024796248" frameborder="0" style="border:0" allowfullscreen></iframe>
+				 <div class="contact-info">
+					<div class="addrs">
+						<address>
+							<strong>' .$name. '</strong><br />'
+							.$building.$addrs.
+							'Indonesia <br />
+							<span class="icon"><i class="fa fa-envelope" aria-hidden="true"></i></span> ' .$email. '<br />
+							<span class="icon"><i class="fa fa-phone" aria-hidden="true"></i></span>' .$phone.
+						'</address>
+					</div>
+					<div class="socials">
+						<ul class="socials list-inline">
+							<li>
+								<a href="facebook.com" class="social facebook">
+									<span class="icon"><i class="fa fa-facebook"></i></span> 
+									Facebook
+								</a>
+							</li>
+							<li>
+								<a href="instagram.com" class="social instagram">
+									<span class="icon"><i class="fa fa-instagram"></i></span>
+									Instagram
+								</a>
+							</li>
+							<li>
+								<a href="youtube.com" class="social youtube">
+									<span class="icon"><i class="fa fa-youtube"></i></span>
+									Youtube
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'contact',
+		array(
+			'label' => 'ADD CONTACT INFO',
+			'listItemImage' => 'dashicons-location',
+			'attrs' => array(
+				array(
+					'label' => 'Corporate Name',
+					'attr' => 'name',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Building Name',
+					'attr' => 'building',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Complete Address',
+					'description' => 'Street, city, state, postal code, etc',
+					'attr' => 'addrs',
+					'type' => 'textarea',
+				),
+				array(
+					'label' => 'Email',
+					'description' => 'your.email@homepage.com',
+					'attr' => 'email',
+					'type' => 'email',
+				),
+				array(
+					'label' => 'Phone',
+					'attr' => 'phone',
+					'type' => 'text',
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
 ?>

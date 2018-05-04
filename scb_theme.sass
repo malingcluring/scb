@@ -117,6 +117,7 @@ body
         +gradient($theme, darken($theme,15))
     
     //=================================================================================================================== IMG FLOAT
+    .clients,
     .maps,
     .bg-img-float,
     .news-main-image
@@ -802,6 +803,33 @@ body
                 .addrs,
                 .socials
                     display: inline-block
+                    
+    // =============================================================================================================== PAGE CLIENTS
+    &.page-our-clients
+        .clients
+            display: block
+            .client-logo-thumb
+                margin: 0
+                padding: 0
+                .thumb
+                    display: block
+                    +square(75px)
+                    img
+                        object-fit: cover
+                        object-position: center center
+                        +square(100%)
+        +screen(sm)
+            .clients
+                position: relative
+                #logo_thumb
+                    position: absolute
+                    right: 0
+                    width: 45%
+                    text-align: right
+            .entry-content
+                .the-title
+                    float: left
+                    width: 50%
     
     
     //=============================================================================================================== FOOTER
@@ -897,12 +925,17 @@ body
                     
     // //=============================================================================================================== CUSTOM POST
     
-    // ---- DISPLAY NONE ON POST TYPE "PAGE"
+    // ---- DISPLAY NONE ON POST TYPE "PAGE" OR "POST"
     &.page-template-default
         .custom-post-title-section,
         #custom_video_testimony,
         #custom_text_testimony,
         #custom_gallery
+            display: none
+            
+    &.post-template-default
+        .maps,
+        .clients
             display: none
             
     // ----- DISPLAY BLOCK ONLY ON POST TYPE "POST"

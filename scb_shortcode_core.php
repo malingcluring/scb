@@ -494,3 +494,33 @@ add_shortcode('tabx', 'scb_tabx');
 		WP_pagenavi(array('query' => $arr_posts));
 	endif;
 ?>
+
+
+
+// ================================================ CLIENTS LOGO THUMBNAIL
+<ul id="logo_thumb">
+<?php
+	
+	$args = array(
+		'post_type' => 'post',
+		'post_status' => 'publish',
+		'category_name' => 'client',
+	);
+	
+	$arr_posts = new WP_Query($args);
+	
+	if($arr_posts->have_posts()) {
+		while($arr_posts->have_posts()) {
+			$arr_posts->the_post();
+			if(has_post_thumbnail()) {
+				?>
+				<li class="client-logo-thumb">
+                    <a href="<?php the_permalink(); ?>" class="thumb"><?php the_post_thumbnail(); ?></a>
+                </li>
+				<?php
+				
+			}
+		}
+	}
+?>
+</ul>

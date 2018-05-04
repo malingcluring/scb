@@ -1,7 +1,40 @@
 <?php get_header(); ?>
-<div class="maps">
-	
+
+<!--clients-->
+<div class="container">
+	<div class="clients">
+		<ul id="logo_thumb" class="list-inline">
+		<?php
+			
+			$args = array(
+				'post_type' => 'post',
+				'post_status' => 'publish',
+				'category_name' => 'client',
+			);
+			
+			$arr_posts = new WP_Query($args);
+			
+			if($arr_posts->have_posts()) {
+				while($arr_posts->have_posts()) {
+					$arr_posts->the_post();
+					if(has_post_thumbnail()) {
+						?>
+						<li class="client-logo-thumb">
+							<a href="<?php the_permalink(); ?>" class="thumb"><?php the_post_thumbnail(); ?></a>
+						</li>
+						<?php
+						
+					}
+				}
+			}
+		?>
+		</ul>
+	</div>
 </div>
+
+
+<!--maps contact us page only-->
+<div class="maps"></div>
 
 <?php if( have_posts() ) : while( have_posts() ) : the_post(); ?>
 <!--post thumbnails-->

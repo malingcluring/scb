@@ -352,6 +352,7 @@ body {
     background-image: -o-linear-gradient(top, #c80007, #7c0004);
     background-image: linear-gradient(top, #c80007, #7c0004);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#c80007', endColorStr='#7c0004'); }
+  body .clients,
   body .maps,
   body .bg-img-float,
   body .news-main-image {
@@ -1182,6 +1183,31 @@ body {
     body.page-contact-us .contact-info .addrs,
     body.page-contact-us .contact-info .socials {
       display: inline-block; } }
+  body.page-our-clients .clients {
+    display: block; }
+    body.page-our-clients .clients .client-logo-thumb {
+      margin: 0;
+      padding: 0; }
+      body.page-our-clients .clients .client-logo-thumb .thumb {
+        display: block;
+        width: 75px;
+        height: 75px; }
+        body.page-our-clients .clients .client-logo-thumb .thumb img {
+          object-fit: cover;
+          object-position: center center;
+          width: 100%;
+          height: 100%; }
+  @media (min-width: 768px) {
+    body.page-our-clients .clients {
+      position: relative; }
+      body.page-our-clients .clients #logo_thumb {
+        position: absolute;
+        right: 0;
+        width: 45%;
+        text-align: right; }
+    body.page-our-clients .entry-content .the-title {
+      float: left;
+      width: 50%; } }
   body footer h2 {
     color: #ff7d00;
     margin-top: 10px; }
@@ -1270,6 +1296,9 @@ body {
   body.page-template-default #custom_video_testimony,
   body.page-template-default #custom_text_testimony,
   body.page-template-default #custom_gallery {
+    display: none; }
+  body.post-template-default .maps,
+  body.post-template-default .clients {
     display: none; }
   @media (min-width: 768px) {
     body.post-template-default .news-main-image {

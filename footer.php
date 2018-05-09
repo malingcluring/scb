@@ -1,5 +1,4 @@
 <footer>
-    <?php /*get_sidebar();*/ ?>
 	<div class="footer-feature">
         <div class="container">
             <div class="row">
@@ -70,27 +69,28 @@
 					<!---->
 				</div>
 				<div class="col-sm-4">
-					<h2>Socials</h2>
-					<ul class="socials list-inline">
-						<li>
-							<a href="facebook.com" class="social facebook">
-								<span class="icon"><i class="fa fa-facebook"></i></span> 
-								Facebook
-							</a>
-						</li>
-						<li>
-							<a href="instagram.com" class="social instagram">
-								<span class="icon"><i class="fa fa-instagram"></i></span>
-								Instagram
-							</a>
-						</li>
-						<li>
-							<a href="youtube.com" class="social youtube">
-								<span class="icon"><i class="fa fa-youtube"></i></span>
-								Youtube
-							</a>
-						</li>
-					</ul>
+					<div class="socials">
+						<ul class="list-inline">
+							<li>
+								<a href="facebook.com" class="social facebook">
+									<span class="icon"><i class="fa fa-facebook"></i></span> 
+									Facebook
+								</a>
+							</li>
+							<li>
+								<a href="instagram.com" class="social instagram">
+									<span class="icon"><i class="fa fa-instagram"></i></span>
+									Instagram
+								</a>
+							</li>
+							<li>
+								<a href="youtube.com" class="social youtube">
+									<span class="icon"><i class="fa fa-youtube"></i></span>
+									Youtube
+								</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
         </div>

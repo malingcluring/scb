@@ -518,16 +518,48 @@ function scb_colspan($atts, $content=null) {
 add_shortcode('icon', 'scb_icon');
 function scb_icon($atts, $content=null) {
 	
-	$atts = shortcode_atts(array(
-		'name' => '',
-		'text' => false,
-		'link' => false,
-	), $atts);
-	$text = ($atts['text']) ? '<span>' .$atts['text']. '</span></a>' : '';
-	$display = ($atts['link']) ? '<a href="' .$atts['link']. '" target="_blank"><span class="icon"><i class="fa fa-' .$atts['name']. '"></i></span>' .$text. '</a>' : '<span class="icon"><i class="fa fa-' .$atts['name']. '"></i></span>' .$text ;
+	$atts = shortcode_atts(
+		array(
+			'name' => '',
+			'icon_text' => '',
+			'link' => '',
+		),
+		$atts, 'icon'
+	);
+	$icon_name = ($atts['name']) ? '<span class="icon"><i class="fa fa-' .$atts['name']. '"></i></span>' : '<span class="icon"><i class="fa fa-send"></i></span>';
+	$text = ($atts['icon_text']) ? '<span>' .$atts['icon_text']. '</span>' : '';
+	$display = ($atts['link']) ? '<a href="' .$atts['link']. '" target="_blank">' .$icon_name.$text. '</a>' : $icon_name.$text ;
 	
 	return $display;
 }
+// ---------------------------------------------------------------------------------------------------------------- FONT AWESOME
+	shortcode_ui_register_for_shortcode(
+		'icon',
+		array(
+			'label' => 'ADD ICON',
+			'listItemImage' => 'dashicons-star-filled',
+			'attrs' => array(
+				array(
+					'label' => 'Icon Name',
+					'atts' => 'name',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Text Content',
+					'atts' => 'icon_text',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'URL',
+					'atts' => 'link',
+					'type' => 'url',
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+				
+// ---------------------------------------------------------------------------------------------------------------- END FONT AWESOME
 // end FA
 
 
@@ -663,34 +695,7 @@ add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
 
 
 
-// ---------------------------------------------------------------------------------------------------------------- FONT AWESOME
-	shortcode_ui_register_for_shortcode(
-		'icon',
-		array(
-			'label' => 'ADD ICON',
-			'listItemImage' => 'dashicons-star-filled',
-			'attrs' => array(
-				array(
-					'label' => 'Icon Name',
-					'atts' => 'name',
-					'type' => 'text',
-				),
-				array(
-					'label' => 'Text Content',
-					'atts' => 'text',
-					'type' => 'text',
-				),
-				array(
-					'label' => 'URL',
-					'atts' => 'link',
-					'type' => 'text',
-				),
-			),
-			'post_type' => array( 'post', 'page' ),
-		)		
-	);
-				
-// ---------------------------------------------------------------------------------------------------------------- END FONT AWESOME
+
 
 
 
@@ -726,7 +731,7 @@ function scb_timeline($attr, $content=null) {
 		}
 	}
 	wp_reset_query();
-	return '<h2>Our Achievement</h2> ' .$return_string;
+	return '<div id="timeline" class="col-sm-12"><h2>Our Achievement</h2> ' .$return_string. '</div>';
 }
 shortcode_ui_register_for_shortcode(
 	'timeline',
@@ -927,4 +932,199 @@ function scb_row($atts, $content=null) {
 			'post_type' => array( 'post', 'page' ),
 		)		
 	);
+	
+	
+	
+?>
+
+
+
+
+
+<?php
+	// ------------------------------------------ NEW SHORTCODE FOR ABOUT US PAGE
+	add_shortcode('profile', 'scb_profile');
+	function scb_profile($content=null){
+		$args = array(
+			'post_type' 		=> 'post',
+			'category_name'		=> 'profile',
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="profile" class="col-sm-7"><div id="profile_1" class="display-posts">' .$display. '</div></div>';
+	}
+
+	add_shortcode('profile_card', 'scb_profile_card');
+	function scb_profile_card($content=null){
+		$args = array(
+			'post_type' 		=> 'post',
+			'category_name'		=> 'profile-card',
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="card" class="col-sm-5"><div id="profile_intro" class="display-posts">' .$display. '</div></div>';
+	}
+	
+	add_shortcode('about_profiles', 'scb_about_profiles');
+	function scb_about_profiles(){
+		return '<div id="about_profiles" class="col-sm-12"><div class="row"><h2 class="expertise text-center">Our Experts</h2>' .do_shortcode('[profile_card]'.'[profile]'). '</div></div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'about_profiles',
+		array(
+			'label' => 'ADD ABOUT PROFILE INFO',
+			'listItemImage' => 'dashicons-admin-users',
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+
+?>
+
+
+<?php
+// ================================= PAGE INTRO SECTION
+	add_shortcode('intro', 'scb_intro');
+	function scb_intro($atts, $content=null){
+		$atts = shortcode_atts(array(
+			'category' => '',
+			'post_id' => '',
+		), $atts, 'intro');
+		
+		$post_id = $atts['post_id'];
+		$category = $atts['category'];
+		
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="intro" class="col-sm-12"><div class="row"><div class="col-sm-4"><div id="' .$post_id. '" class="display-posts">' .$display. '</div></div></div></div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'intro',
+		array(
+			'label' => 'ADD PAGE INTRO',
+			'listItemImage' => 'dashicons-format-quote',
+			'attrs' => array(
+				array(
+					'label' => 'Add Intro ID',
+					'attr' => 'post_id',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Choose Intro Category Page',
+					'attr' => 'category',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+
+	
+	
+	
+	// =================== SCB MODEL CORPORATE CULTURE PAGE
+	add_shortcode('model', 'scb_model');
+	function scb_model() {
+		$args = array(
+			'post_type' => 'post',
+			'category_name' => 'corporate-culture-model',
+			'posts_per_page' => 1
+		);
+		
+		$query = new WP_Query($args);
+		
+		$content = '';
+		if($query->have_posts()) {
+			while($query->have_posts()) {
+				$query->the_post();
+				$content .= '<div class="col-sm-4 scb-model">
+								<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>
+								<h4>how to build corporate</h4>
+								<div class="model-thumb">' .get_the_post_thumbnail(). '</div>
+							</div>
+							<div class="scb-carousel col-sm-8">';
+			}
+		}
+		
+		return $content;
+	}
+	
+	add_shortcode('service_culture_model', 'scb_service_culture_model');
+	function scb_service_culture_model() {
+		return '<div id="service_culture_model" class="col-sm-12">
+					<div class="row">
+						' .do_shortcode('[model]'.'[image-carousel category="corporate-culture" orderby="page" order="ASC"]'). '</div>
+					</div>
+				</div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'service_culture_model',
+		array(
+			'label' => 'SCB MODEL',
+			'listItemImage' => 'dashicons-admin-settings',
+			'post_type' => array( 'post', 'page' ),
+		)
+	);
+
+
 ?>

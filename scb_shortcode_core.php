@@ -524,3 +524,131 @@ add_shortcode('tabx', 'scb_tabx');
 	}
 ?>
 </ul>
+
+<h2 class="expertness">our experts</h2>
+<div id="card" class="col-sm-5">
+	<div id="profile_intro" class="display-posts">
+		
+	</div>
+</div>
+
+<?php
+	add_shortcode('profile', 'scb_profile');
+	function scb_profile($content=null){
+		$args = array(
+			'post_type' 		=> 'post',
+			'category_name'		=> 'profile',
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="profile" class="col-sm-7"><div class="display-posts">' .$display. '</div></div>';
+	}
+
+	add_shortcode('profile_card', 'scb_profile_card');
+	function scb_profile_card($content=null){
+		$args = array(
+			'post_type' 		=> 'post',
+			'category_name'		=> 'profile-card',
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="card" class="col-sm-5"><div class="display-posts">' .$display. '</div></div>';
+	}
+	add_shordcode('about-profiles', 'scb_about_profiles');
+	function scb_about_profiles(){
+		return '<h2 class="expertise">Our Experts</h2>' .do_shortcode('[profile_card]'.'[profile]');
+	}
+
+?>
+
+<!-- SCB MODEL SERVICE CULTURE PAGE STRUCTURE-->
+<div id="service_culture_model" class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-4">
+			<div class="scb-model">
+				<h4>how to build corporate</h4>
+				<img src="" alt="">
+			</div>
+		</div>
+		<div class="col-sm-8">
+			
+		</div>
+    </div>
+</div>
+<?php
+// =================== SCB MODEL SERVICE CULTURE PAGE
+add_shortcode('model', 'scb_model');
+function scb_model() {
+	$args = array(
+		'post_type' => 'post',
+		'category_name' => 'service-culture-model',
+		'posts_per_page' => 1
+	);
+	
+	$query = new WP_Query($args);
+	
+	$content = '';
+	if($query->have_posts()) {
+		while($query->have_posts()) {
+			$query->the_post();
+			$content .= '<div class="col-sm-4">
+							<div class="scb-model">
+								<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>
+								<h4>how to build corporate</h4>
+								<div class="model-thumb">' .the_post_thumbnail();. '</div>
+							</div>
+						</div>
+						<div class="col-sm-8">';
+		}
+	}
+	
+	return $content;
+}
+
+add_shortcode('service_culture_model', 'scb_service_culture_model');
+function scb_service_culture_model() {
+	return '<div id="service_culture_model" class="col-sm-12">
+				<div class="row">
+					' .do_shortcode('[model]'.'[image-carousel category="corporate-culture" orderby="page" order="ASC"]'). '</div>
+				</div>
+			</div>';
+}
+
+
+?>

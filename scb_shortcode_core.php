@@ -650,5 +650,514 @@ function scb_service_culture_model() {
 			</div>';
 }
 
+?>
+
+<!-- ================================= POST THUMBNAIL SHORTCODE ================================= -->
+<div id="top_consultant" class="col-sm-12 top-consultant">
+	<h2 class="section-title">1section_title</h2>
+    <div id="{$id}" class="display-posts">
+        
+    </div>
+</div>
+
+<?php
+add_shortcode('top_consultant', 'scb_top_consultant');
+function scb_top_consultant($atts, $content) {
+	$atts = shotcode_atts(array(
+		'id' => '',
+		'title' => '',
+		'category' => ''
+	), $atts, 'top_consultant');
+	
+	$id = ($atts['id']) ? ' id="' .$atts['id']. '"' : '';
+	$title= ($atts['title']) ? '<h2 class="section-title">' .$atts['title']. '</h2>' : '';
+	$category = $atts['category'];
+	
+	$post_args = array(
+		'post_type' => 'post',
+		'cat' => ''
+	);
+	
+	$query = new wp_query($post_args);
+	
+	$post_content = '<div id="top_consultant" class="col-sm-12 top-consultant">
+						' .$title. '
+						<div ' .$id. ' class="display-posts">';
+	
+	if($query->have_posts()) {
+		while($query->have_posts()) {
+			$query->the_post();
+			$post_content .= '<div class="post-display-item">
+								<div class="post-content">
+									<div class="img-feature">' .the_post_thumbnail(). '</div>
+									<h5 class="consultant-name"><a href="' .get_permalink(). '">' .get_the_title(). '</a></h5>
+								</div>
+							</div>';
+		}
+	}
+	
+	return $post_content. '</div></div>';
+}
+shortcode_ui_register_for_shortcode(
+	'top_consultant',
+	array(
+		'label' => 'Add TOP CONSULTANT',
+		'listItemImage' => 'fa-clipboard',
+		'attrs' => array(
+			array(
+				'label' => 'Enter an ID',
+				'description' => 'ID is required',
+				'attr' => 'id',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Add Section Title',
+				'attr' => 'title',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Choose Post Category',
+				'attr' => 'category',
+				'type' => 'select',
+				'options' => $arrcategories,
+			),
+		),
+		'post_type' => array('post', 'page'),
+	)
+);
+
 
 ?>
+
+// ==================  custom post shortcode
+<?php
+				$loop = new WP_Query( array(
+					'post_type' => 'post',
+					'category_name' => 'video-testimony',
+					'posts_per_page' => 3
+				) );
+			?>                        
+
+				<?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
+					<?php the_content();?>
+				<?php endwhile; ?>
+
+			<?php wp_reset_query(); ?>
+			
+<?php
+
+add_shortcode('fixed_custom_post', 'scb_fixed_custom_post');
+function scb_fixed_custom_post($atts, $content=null, $tag) {
+	$atts = shortcode_atts(array(
+		'category_name' => '',
+		'id' => '',
+		'post_number' => ''
+	), $atts, 'fixed_custom_post');
+	$category = $atts['category_name'];
+	$id = ($atts['id']) ? 'id="' .$atts['id']. '"' : '';
+	$number = $atts['post_number'];
+	
+	$post_args = array(
+		'post_type' => 'post',
+		'posts_per_page' => $number,
+		'category_name' => $category
+	);
+	$query = new wp_query($post_args);
+	
+	if($query->have_posts()) {
+		$content = '';
+		while($query-> hape_posts()) {
+			$content .= the_content();
+		}
+	}
+	
+	return '<div ' .$id. 'class="testimony-custom-post">' .$content. '</div>';
+}
+
+?>
+
+
+<!--// ============== event schedule=================-->
+<div class="event-schedule">
+	<div class="event-title">
+		<h1>Event Title 1</h1>
+	</div>
+	<div class="event-description">
+		<div class="tagline"></div>
+		<div class="description"></div>	
+	</div>
+	<div class="event-venue">
+		<div class="venue-name"></div>
+		<div class="venue-date-time"></div>
+		<div class="event-url"></div>
+	</div>
+	<div class="socials">
+		<div class="whatsapp">
+            <span class="icon">
+                <i class="fa fa-whatsapp"></i>
+            </span>
+			<span class="contact-person">
+				<span class="name"></span>
+                <span class="phone"></span>
+			</span>
+        </div>
+		<div class="instagram">
+            <span class="icon">
+                <i class="fa fa-instagram"></i>
+            </span>
+            <span class="contact-person">
+				<span class="name"></span>
+                <span class="phone"></span>
+			</span>
+        </div>
+	</div>
+</div>
+
+<?php
+
+add_shortcode('event_schedule', 'scb_event_schedule');
+function scb_event_schedule($atts, $content=null, $tag) {
+	$atts = shortcode_atts(array(
+		'title' => 'Event Title',
+		'tagline' => 'Tagline',
+		'desc' => 'Event Description',
+		'venue_name' => 'Venue',
+		'event_date' => 'Date Time',
+		'event_url' => 'Event URL',
+		'wa_name' => 'Jayasaf',
+		'wa_number' => '+62 896 2485 9082',
+		'instagram_name' => 'Great.speaker',
+		'instagram_url' = 'https://www.instagram.com/great.speaker/'
+	), $atts, 'event_schedule');
+	
+	$title = $atts['title'];
+	$tagline = ($atts['tagline']) ? '<div class="description">' .$atts['tagline']. '</div>' : '';
+	$desc = ($atts['desc']) ? '<div class="tagline">' .$atts['desc']. '</div>' : '';
+	$venue_name = $atts['venue_name'];
+	$event_date = $atts['event_date'];
+	$event_url = $atts['event_url'];
+	$wa_name = $atts['wa_name'];
+	$wa_number = $atts['wa_number'];
+	$inst_name = $atts['instagram_name'];
+	$inst_url = $atts['instagram_url'];
+	
+	$schedule_display = '<div class="event-schedule">
+							<div class="event-title">
+								<h1>' .$title. '</h1>
+							</div>
+							<div class="event-description">
+								' .$tagline.$desc. '
+							</div>
+							<div class="event-venue">
+								<div class="venue-name">' .$venue_name. '</div>
+								<div class="venue-date-time">' .$event_date. '</div>
+								<div class="event-url">' .$event_url. '</div>
+							</div>
+							<div class="socials">
+								<div class="whatsapp">
+									<span class="icon">
+										<i class="fa fa-whatsapp"></i>
+									</span>
+									<span class="contact-person">
+										<span class="name">' .$wa_name. '</span>
+										<span class="phone">' .$wa_number. '</span>
+									</span>
+								</div>
+								<div class="instagram">
+									<span class="icon">
+										<i class="fa fa-instagram"></i>
+									</span>
+									<span class="contact-person">
+										<span class="name">' .$inst_name. '</span>
+										<span class="phone">' .$inst_url. '</span>
+									</span>
+								</div>
+							</div>
+						</div>';
+	
+	return $schedule_display;
+}
+shortcode_ui_register_for_shortcode(
+	'event_schedule',
+	array(
+		'label' => 'ADD EVENT SCHEDULE',
+		'listItemImage' => 'fa-clipboard',
+		'attrs' => array(
+			array(
+				'label' => 'Enter Event Title',
+				'description' => 'ID is required',
+				'attr' => 'title',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Event Tagline',
+				'description' => 'or leave blank if event not have tagline',
+				'attr' => 'tagline',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Event Description',
+				'description' => 'or leave blank if event not have description',
+				'attr' => 'desc',
+				'type' => 'textarea',
+			),
+			array(
+				'label' => 'Enter Event Venue',
+				'description' => 'Venue is required',
+				'attr' => 'venue_name',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Event Date Time',
+				'description' => 'Event Date Time is required',
+				'attr' => 'event_date',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Event/Venue URL',
+				'description' => 'Event/Venue URL is required',
+				'attr' => 'event_url',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Person In Charge',
+				'description' => 'Leave it blank for default PIC (Whatsapp name: Jayasaf)',
+				'attr' => 'wa_name',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Contact for Person In Charge',
+				'description' => 'Leave it blank for default PIC (Whatsapp number: +62 896 2485 9082)',
+				'attr' => 'wa_number',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Instagram Account',
+				'description' => 'Leave it blank for default Instagram account (great.speaker)',
+				'attr' => 'instagram_name',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Instagram URL',
+				'description' => 'Leave it blank for default Instagram URL (https://www.instagram.com/great.speaker/)',
+				'attr' => 'instagram_url',
+				'type' => 'text',
+			),
+		),
+		'post_type' => array('post', 'page'),
+	)
+);
+
+?>
+<!--=========================== schedule card ==============================-->
+<div class="schedule-card card-month">
+	<div class="schedule-list month">
+		<h2 class="month-label"></h2>
+		<div class="date-time"></div>
+        <div class="event-name"></div>
+	</div>
+</div>
+
+
+
+
+
+
+
+ <!--================================ news list ================================= -->
+ <div class="news-list">
+    <h2 class="section-title">News Events</h2>
+	<div class="news-content">
+		<div class="news-thumbnail">.get_the_post_thumbnail().</div>
+		<div class="news-detail">
+			<h4 class="news-title">
+				<a href="' .get_permalink(). '">' .get_the_title(). '</a>
+			</h4>
+			<div class="news-short">
+				.do_shortcode(get_the_content(), $content).
+			</div>
+			<a href="' .get_permalink(). '" class="btn btn-default">more</a>
+		</div>
+	 </div>
+ </div>
+
+ <!--================================ outbound list ================================= -->
+<div id="section1">
+	<h4>
+		Dynamic Pills <br />
+		<small>Lorem ipsum dolor sit amet, consectetur </small>
+	</h4>
+	<ul class="nav nav-pills">
+		<li class="active"><a data-toggle="pill" href="#menu1">Home</a></li>
+		<li><a data-toggle="pill" href="#menu">Menu 1</a></li>
+	</ul>
+	<div class="tab-content">
+		<div id="menu1" class="tab-pane fade in active">
+			<h3>HOME</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+		</div>
+		<div id="menu2" class="tab-pane fade">
+			<h3>Menu 1</h3>
+			<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+		</div>
+	</div>
+</div>
+
+<?php
+
+add_shortcode('outbound_card', 'scb_outbound_card');
+function scb_outbound_card($atts, $content=null) {
+	$atts = shortcode_atts(array(
+		'id' => '',
+		'title' => '',
+		'subtitle' => '',
+		'definition' => '',
+		'objective' => ''
+	), $atts, 'outbound_card');
+	
+	$id = $atts['id'];
+	$title = $atts['title'];
+	$subtitle = ($atts['subtitle']) ? '<br /><small>' .$atts['subtitle']. '</small>' : '';
+	$definition = $atts['definition'];
+	$objective = $atts['objective'];
+	
+	return '<div id="outbound">
+				<div id="' .$id. '" class="outbound-card">
+					<h4>
+						' .$title. '
+						' .$subtitle. '
+					</h4>
+					<div class="tab-content">
+						<div id="' .$id. '_definition" class="tab-pane fade in active">
+							' .$definition. '
+						</div>
+						<div id="' .$id. '_objective" class="tab-pane fade">
+							' .$objective. '
+						</div>
+					</div>
+					<ul class="nav nav-pills">
+						<li class="active"><a data-toggle="pill" href="#' .$id. '_definition">Definition</a></li>
+						<li><a data-toggle="pill" href="#' .$id. '_objective">Objective</a></li>
+					</ul>
+				</div>
+			</div>';
+	
+}
+shortcode_ui_register_for_shortcode(
+	'outbound_card',
+	array(
+		'label' => 'ADD OUTBOUND CARD',
+		'listItemImage' => 'fa-clipboard',
+		'attrs' => array(
+			array(
+				'label' => 'Enter ID',
+				'description' => 'ID is required',
+				'attr' => 'id',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Title',
+				'description' => 'Title is required',
+				'attr' => 'title',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Subtitle',
+				'attr' => 'subtitle',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'Enter Definition',
+				'description' => 'Definition is required',
+				'attr' => 'definition',
+				'type' => 'textarea',
+			),
+			array(
+				'label' => 'Enter Objective',
+				'description' => 'Objective is required',
+				'attr' => 'objective',
+				'type' => 'textarea',
+			),
+		),
+		'post_type' => array('post', 'page'),
+	)
+);
+?>
+
+
+
+
+<!--lightbox ke-2-->
+<?php
+
+	add_shortcode('video_testimony', 'scb_video_testimony');
+	function scb_testimony($atts, $content=null){
+		$atts = shortcode_atts(array(
+			'category' => '',
+			'post_id' => '',
+			'title' => '',
+		), $atts, 'video_testimony');
+		
+		$post_id = $atts['post_id'];
+		$category = $atts['category'];
+		$title = $atts['title'];
+		
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				$display .=  get_the_content();
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="' .$post_id. '" class="video-testimony"><h2>' .$title. '</h2>' .$display. '</div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'video_testimony',
+		array(
+			'label' => 'ADD VIDEO TESTIMONY',
+			'listItemImage' => 'dashicons-video-alt3',
+			'attrs' => array(
+				array(
+					'label' => 'Choose Post Category',
+					'attr' => 'category'
+					'type' => 'select',
+					'options' => $arrcategories
+				),
+				array(
+					'label' => 'Enter ID',
+					'attr' => 'post_id',
+					'type' => 'text'
+				),
+				array(
+					'label' => 'Enter Section Title',
+					'attr' => 'title',
+					'type' => 'text'
+				)
+			),
+			'post_type' => array('post', 'page')
+		)
+	);
+
+?>
+
+
+
+<ul class="list-inline text-center">
+	li>div.
+</ul>

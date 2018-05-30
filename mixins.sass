@@ -1,5 +1,10 @@
 @import variables
 
+=font-heading
+    font-family: $font-default
+    font-style: normal
+    font-weight: 900
+
 =clearfix 
     &:after 
         content: ""
@@ -10,6 +15,10 @@
     width: $size
     height: $size
     
+=img-clip
+    object-fit: cover
+    object-position: center center
+    +square(100%)
     
 // Respond above.
 =screen($breakpoint) 

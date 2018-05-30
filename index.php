@@ -55,9 +55,7 @@
 
 <!--blog content-->
 <div class="entry-content">
-	<h1 class="the-title">
-		<?php echo str_replace(' ', '<span>', get_the_title()); ?>
-	</h1>
+	<h1 class="the-title"><?php the_title(); ?></h1>
 	<?php the_content(); ?>
 </div>
 <?php
@@ -67,8 +65,12 @@
 	
 <?php endif; ?>
 
+
+
+
 <!--====================================== CUSTOM POST ==========================-->
 <div id="custom_post" class="container">
+	
 	<div class="row">
 		<h2 class="custom-post-title-section">TESTIMONIALS</h2>
 	</div>
@@ -84,7 +86,7 @@
 			?>                        
 
 				<?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
-					<?php the_content();?>
+					<?php the_content(); ?>
 				<?php endwhile; ?>
 
 			<?php wp_reset_query(); ?>  

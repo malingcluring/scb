@@ -20,7 +20,7 @@
     +scb-button($black)
     
 h1, h2, h3, h4, h5, h6
-    font-family: $font-heading
+    +font-heading
 
 html,
 body
@@ -40,6 +40,7 @@ body
             position: relative
             background: $black
             z-index: 1000
+            margin-bottom: 0
             +radius(0)
             .navbar-header
                 .navbar-toggle
@@ -109,6 +110,7 @@ body
     
     //=================================================================================================================== MUSTHEAD
     #musthead
+        display: none
         position: absolute
         top: 0
         width: 100%
@@ -135,11 +137,10 @@ body
             display: block
             +screen(sm)
                 font-size: 7em
-                font-weight: 700
-                span
+                .last
                     display: block
                     &:last-child:after
-                        content: ' -'
+                        //content: ' -'
          
         //=============================================================================================================== MUSTHEAD       
         #musthead
@@ -184,23 +185,41 @@ body
                 font-family: $font-slab
                 font-style: italic
                 line-height: 1.7em
-                background: rgba($white, .35)
                 padding: 15px
+                
+    //=============================================================================================================== INTRO
+    #client_all
+        display: none
                 
         
     
     
     //=============================================================================================================== PAGE-HOME
     &.page-home
+        #custom_gallery
+            display: none !important
         .entry-content
             .the-title
                 display: none
             //======================================================================================================= CAROUSEL MAIN 
             .carousel[id*="cptbc"]
-                +screen(xs)
-                    overflow: hidden
-                    .carousel-indicators
-                        bottom: 20%                    
+                .carousel-inner
+                    height: 100vh
+                    background-color: lighten($orange, 30)
+                    .item
+                        height: 100%
+                        width: 100%
+                        img
+                            +img-clip()
+                        .carousel-caption
+                            font-size: 2rem
+                            h4
+                                font-size: 36px
+                .carousel-control
+                    background: transparent !important
+                    
+                +screen(sm)
+                    overflow: hidden       
                     .carousel-inner
                         .item
                             img
@@ -227,16 +246,6 @@ body
                                 left: -2%
                             &.right
                                 right: -2%
-                .carousel-inner
-                    height: calc(100vh - 72px)
-                    .item
-                        height: 100%
-                        img
-                        .carousel-caption
-                            
-                            bottom: inherit
-                .carousel-control
-                    background: transparent !important
                     
         .display-posts
             text-align: center
@@ -253,7 +262,7 @@ body
                 .post-content > p > a
                     margin: 10px 0
             +screen(sm)
-                height: 80vh
+                //height: 80vh
                 h2
                     margin-bottom: 2em
                 .post-display-item
@@ -373,108 +382,131 @@ body
             #about_profiles
                 .expertise
                     text-transform: capitalize
-            
-                #card
-                    text-align: center
-                    .post-content
-                        & > a
-                            text-align: center
-                            padding: 15px 6px
-                            font-size: 3em
-                            +radius(25%)
-                            &:hover
-                                color: $theme
-                                background-color: $white
-                                +box-shadow(0, 0, 8px, rgba($black, .3))
-                            .icon
-                                display: inline-block
-                                line-height: 72px
-                                +square(72px)
-                        ul
-                            text-align: left
-                    +screen(sm)
-                        #profile_intro
-                            position: relative
-                            overflow: hidden
-                            top: 64px
-                            +radius(8px)
-                            +box-shadow(1px, 1px, 3px, rgba($black, .3))
-                            .post-display-item
-                                height: 500px
-                                .post-content
-                                    h3, h4, p, ul,
-                                        margin-left: 15px
-                                        text-transform: capitalize
-                                    h3
-                                        margin: 2em 0
-                                        a
-                                            color: $orange
-                                                
-                                    h4
-                                        top: 40px
-                                        font-style: italic
-                                        width: 100%
-                                        text-align: left
-                                    ul
-                                        
-                                        li
-                                            margin-top: 15px
-                                    
-                                    p
-                                        position: absolute
-                                        overflow: hidden
-                                        z-index: -2
-                                        top: 60px
-                                        +square(500px)
-                                        +radius(20%)
-                                        +transform(rotate(25deg) translateX(55%))
-                                        img
-                                            z-index: -1
-                                            +square(100%)
-                                            +transform(rotate(-25deg) scale(1.3))
-                #profile_1
-                    margin-top: 64px
+                    margin-bottom: 72px
+                #profile_intro
                     .post-display-item
+                        color: $black
+                        a
+                            color: $black
+                        .profile-card-content
+                            a
+                                display: inline-block
+                                margin: 12px
+                                text-decoration: none
+                                color: $black
+                                span
+                                    display: block
+                                    margin-left: 2px
+                                .icon
+                                    font-size: 2.5rem
+                                    width: 50px
+                                    padding: 1px
+                                    text-align: center
+                                    i[class*="facebook"]
+                                        color:  #3B5998
+                                    i[class*="instagram"]
+                                        color:  #8a3ab9
+                                    i[class*="twitter"]
+                                        color:  #1dcaff
+                            
+                +screen(sm)
+                    #profile_intro
                         position: relative
-                        height: 190px
                         overflow: hidden
+                        background-size: cover !important
+                        +radius(8px)
+                        +box-shadow(1px, 1px, 3px, rgba($black, .3))
+                        .post-display-item
+                            .profile-card-content
+                                color: $black
+                                +text-shadow(1px, 1px, 2px, rgba($white, .5))
+                                img
+                                    position: absolute
+                                    top: 0
+                                    left: 0
+                                    z-index: -1
+                                    width: 100%
+                                    height: 100%
+                                    object-fit: cover
+                                    object-position: top center
+                                h4,
+                                ul
+                                    margin-bottom: 32px
+                                a
+                                    display: block
+                                    margin: 24px
+                                    text-decoration: none
+                                    color: $black
+                                    span
+                                        line-height: 50px
+                                        display: inline-block
+                                        height: 50px
+                                        margin-left: 12px
+                                    .icon
+                                        font-size: 2.5rem
+                                        background-color: rgba($white, .35)
+                                        width: 50px
+                                        padding: 1px
+                                        text-align: center
+                                        +radius(50%)
+                                        .fa
+                                            color: $black
+                                    &:hover
+                                        .icon
+                                            background-color: $white
+                #profile_1
+                    margin-top: 50px
+                    .post-display-item
                         margin-bottom: 15px
-                        padding: 15px
                         border: solid 1px darken($white, 5)
+                        padding: 15px
                         +radius(8px)
                         &:hover
                             cursor: pointer
                             background: darken($white, 5)
                         .post-content
-                            position: absolute
-                            width: 95%
-                            height: 150px
-                            overflow: hidden
-                            p, h3, ul, img
-                                position: absolute
-                            p
-                                margin-top: 20px
-                                +square(100px)
-                                img
-                                    overflow: hidden
-                                    +radius(50%)
-                                    +square(100%)
-                            h3, ul
-                                display: block
-                                left: 140px
-                            h3
-                                height: 35px
-                                margin-top: 4px
-                            ul
-                                margin-top: 30px
-                                margin-left: -24px
-                                height: 110px
+                            p > img
                                 overflow: hidden
-                                +screen(sm)
-                                    height: 120px
-                            ul > li
-                                margin-top: 4px
-                                margin-bottom: 4px
+                                +square(150px)
+                                +radius(20%)
+                +screen(sm)
+                    #profile_1
+                        margin-top: 0
+                        .post-display-item
+                            position: relative
+                            height: 190px
+                            overflow: hidden
+                            
+                            .post-content
+                                position: absolute
+                                width: 95%
+                                height: 150px
+                                overflow: hidden
+                                p, h3, ul, img
+                                    position: absolute
+                                p
+                                    margin-top: 20px
+                                    +square(100px)
+                                    img
+                                        overflow: hidden
+                                        +radius(50%)
+                                        +square(100%)
+                                h3, ul
+                                    display: block
+                                    left: 140px
+                                h3
+                                    height: 35px
+                                    margin-top: 4px
+                                ul
+                                    margin-top: 30px
+                                    margin-left: -24px
+                                    height: 110px
+                                    overflow: hidden
+                                    +screen(sm)
+                                        height: 120px
+                                ul > li
+                                    margin-top: 4px
+                                    margin-bottom: 4px
             #timeline
                 position: relative
                 margin: 72px auto
@@ -569,65 +601,62 @@ body
                                 +box-shadow(0, 10px, 40px, rgba($black, .1))
                             
     //=============================================================================================================== PAGE CORPORATE CULTURE
-    &.page-corporate-culture
-        #service_culture_model
-            .scb-model
-                text-align: center
-                .model-thumb
-                    width: 100%
-                    padding: 50px
-                    img
-                        overflow: hidden
-                        +square(100%)
-                        +radius(50%)
-            .scb-carousel
-                padding: 0
-                margin: 0 15px
+    &.page-corporate-culture,
+    &.page-service-culture
+        .scb-model
+            text-align: center
+            .model-thumb
+                width: 100%
+                padding: 20px
+                img
+                    overflow: hidden
+                    +square(100%)
+                    +radius(50%)
+        .scb-carousel
+            .carousel-indicators
+                display: none
+                        
+            .carousel-control
+                display: block
+                background-image: none
+                color: $theme
+                +opacity(1)
+                        
+            .carousel-inner
                 +box-shadow(-50px, 0, 100px, rgba($black, .05))
-                .carousel-indicators
-                    display: none
-                            
-                .carousel-control
-                    display: block
-                    background-image: none
-                    color: $theme
-                    +opacity(1)
-                            
-                .carousel-inner
-                    img
-                        width: 100%
-                    .carousel-caption
-                        bottom: 20%
-                        color: $black
-                        padding: 0 15px
-                        overflow: hidden
-                        white-space: nowrap
-                        text-overflow: ellipsis
-                        +text-shadow(0,0,0, rgba($white, 0))
-                        h4
-                            text-transform: uppercase
-                            font-family: $font-condensed
-                        ul
-                            display: none
-                +screen(sm)
-                    margin: inherit
-                    .carousel-control
+                img
+                    width: 100%
+                .carousel-caption
+                    bottom: 20%
+                    color: $black
+                    padding: 0 15px
+                    overflow: hidden
+                    white-space: nowrap
+                    text-overflow: ellipsis
+                    +text-shadow(0,0,0, rgba($white, 0))
+                    h4
+                        text-transform: uppercase
+                        font-family: $font-condensed
+                    ul
                         display: none
-                    .carousel-indicators
-                        display: block
-                        li
-                            border-color: $theme
-                            &.active
-                                background-color: $theme
-                    .carousel-inner
-                        .carousel-caption
-                            max-height: 70%;
-                            height: 70%
-                            white-space: normal
-                            ul
-                                display: block
-                                margin-top: 12px
-                                text-align: left
+            +screen(sm)
+                .carousel-control
+                    display: none
+                .carousel-indicators
+                    display: block
+                    li
+                        border-color: $theme
+                        &.active
+                            background-color: $theme
+                .carousel-inner
+                    .carousel-caption
+                        max-height: 70%;
+                        height: 70%
+                        white-space: normal
+                        ul
+                            display: block
+                            margin-top: 12px
+                            text-align: left
     
     //=============================================================================================================== PAGE THE CMG
     &.page-the-cmg
@@ -659,14 +688,20 @@ body
     &.page-the-cmg
         .entry-content
             .top-consultant
+                padding: 5em 0
+                .section-title
+                    text-align: center
+                    text-transform: uppercase
+                    margin-top: 3em
                 .display-posts
                     text-align: center
                     padding: 5em 0
                     +clearfix
                     h2
                         text-transform: uppercase
+                        margin-bottom: 2em
                     .post-display-item
-                        +radius(29px)
+                        +radius(25px)
                         .post-content
                             .img-feature
                                 margin: 0 auto 
@@ -680,86 +715,104 @@ body
                                     object-fit: cover
                             .consultant-name
                                 margin: 2em 0
+                                text-transform: capitalize
                     +screen(sm)
-                        height: 80vh
-                        h2
-                            margin-bottom: 2em
                         .post-display-item
                             display: inline-block
                             overflow: hidden
-                            position: relative
                             margin: 15px
-                            top: 0px
-                            &:hover
-                                cursor: pointer
-                                top: -2px
-                                .post-content
-                                    .img-feature
-                                        +box-shadow(0, 5px, 10px, rgba($black, .2))
+                            .img-feature
+                                position: relative
+                                top: 0px
+                                &:hover
+                                    cursor: pointer
+                                    top: -2px
+                                    +box-shadow(0, 5px, 10px, rgba($black, .2))
             .video-testimony
                 text-align: center
-                margin-bottom: 5em
-                +screen(md)
-                    height: 80vh
-                    margin-bottom: 0
+                padding: 5em 0
                 h2
                     text-transform: uppercase
                     margin-bottom: 2em
                 .lightbox-gallery
-                    display: inline-block
-                    width: 100%
-                    +screen(md)
-                        max-width: 250px
+                    margin: 15px auto
                     .video
+                        height: 150px
+                        max-width: calc(100% - 30px)
+                        display: inline-block
                         img
-                            +transform(scale(.99))
-                            +square(100%)
-                            &:hover
-                                +transform(scale(1))
-                                +box-shadow(0, 0, 10px, rgba($black, .35))
-            .image-gallery
+                            +img-clip()
                 +screen(sm)
-                    height: 80vh
+                    margin-bottom: 0
+                    .lightbox-gallery
+                        display: inline-block
+                        width: calc(33% - 4px)
+                        max-width: 250px
+                        .video
+                            img
+                                +transform(scale(.99))
+                                &:hover
+                                    +transform(scale(1))
+                                    +box-shadow(0, 0, 10px, rgba($black, .35))
+                    
+            .image-gallery
+                padding: 5em 0
                 h2
                     text-transform: uppercase
-                    margin-bottom: 2em
+                    margin: 2em
+                    text-align: center
                 .gallery
                     background: darken($white, 5)
                     .gallery-item
-                        display: block
-                        +screen(sm)
-                            display: inline-block
-                            margin: 1px
-                            width: calc(20% - 2px)
+                        display: inline-block
+                        margin: 1px
+                        width: calc(33% - 2px)
                         .gallery-icon
                             img
                                 border: none
                                 background-color: $purple
                                 +square(100%)
+                +screen(sm)
+                    //height: 80vh
+                    .gallery-item
+                        width: calc(20% - 2px) !important
                                 
                                 
     // =============================================================================================================== NEWS PAGE                            
     &.page-news
-        .news-main-image
-            +screen(sm)
-                width: 100%
-                height: 100vh
-                display: block !important
-                margin-top: -86px
-                margin-bottom: 5em
-                img
-                    width: 100%
-                    height: 100%
-                    object-fit: cover
-                    object-position: center center
         .entry-content
-            h1.the-title
-                display: none
-            .news-content
-                padding: 0 15px
-                img
+            .section-title
+                text-transform: capitalize
+                text-align: center
+            .news-list
+                .news-content
                     display: block
-        
+                    margin: 15px auto
+                    padding: 15px
+                    border: solid 1px transparent
+                    background-color: rgba($white, .15)
+                    +radius(5px)
+                    &:hover
+                        border-color: darken(rgba($white, .35), 15)
+                        background-color: darken(rgba($white, .15), 15)
+                    .news-thumbnail
+                        text-align: center
+                        height: 150px
+                        width: 100%
+                        img
+                            overflow: hidden
+                            +img-clip
+                            +radius(10px)
+                +screen(sm)
+                    .news-content
+                        display: flex
+                        .news-thumbnail
+                            flex: 2
+                            +radius(10%)
+                        .news-detail
+                            flex: 7
+                            margin-left: 15px
+            
     
     // =============================================================================================================== PAGE-CONTACT US
     &.page-contact-us
@@ -816,28 +869,146 @@ body
     &.page-our-clients
         .clients
             display: block
+            
             .client-logo-thumb
                 margin: 0
                 padding: 0
+                width: calc(20% - 5px)
                 .thumb
                     display: block
-                    +square(75px)
+                    +square(100%)
                     img
-                        object-fit: cover
-                        object-position: center center
-                        +square(100%)
+                        +img-clip
+        .entry-content
+            .the-title,
+            #client_all
+                display: block
+                margin: 50px 15px
+                +clearfix
+            
         +screen(sm)
             .clients
-                position: relative
                 #logo_thumb
-                    position: absolute
-                    right: 0
-                    width: 45%
                     text-align: right
+                    width: 400px
+                    float: right
             .entry-content
                 .the-title
-                    float: left
                     width: 50%
+                #client_all
+                    ul
+                        column-count: 4
+                        column-gap: 40px
+                        font-style: normal
+                        li
+                            text-transform: capitalize
+    
+    // =============================================================================================================== PAGE OUTBOUND
+    &.page-outbound
+        .outbound-box
+            position: relative
+            display: block
+            margin: 15px
+            +box-shadow(-50px, 0, 100px, rgba($black, .05))
+            img
+                position: absolute
+                z-index: -1
+                +img-clip
+            .outbound-card
+                padding: 15px
+                h4,
+                .tab-content
+                    padding: 15px 48px
+                .nav-pills
+                    text-align: center
+                    padding: 15px 0
+                    & > li
+                        display: inline-table
+                        & > a
+                            color: $black
+                            background-color: rgba(darken($white, 10), .35)
+                            +radius(25px)
+                            &:hover,
+                            &:focus
+                                background-color: darken($white, 10)
+                        &.active > a
+                            color: $orange
+                            background-color: $black
+            +screen(md)
+                display: inline-block
+                height: 350px
+                width: calc(50% - 30px)
+                .outbound-card
+                    .tab-content
+                        min-height: 170px
+                    
+    
+    // =============================================================================================================== PAGE SCHEDULE
+    &.page-schedule
+        .entry-content
+            .event-schedule-card
+                font-family: $font-mono
+                .card-item
+                    position: relative
+                    display: block
+                    float: left
+                    //height: 310px
+                    width: calc(100% - 24px)
+                    margin: 12px
+                    padding: 15px
+                    border: 1px solid rgba($black, .3)
+                    overflow: hidden
+                    +radius(5px)
+                    .month
+                        font-size: 2em
+                        text-transform: capitalize
+                    a
+                        text-decoration: none
+                        .event-schedule
+                            .event-banner
+                                position: absolute
+                                overflow: hidden
+                                background-color: darken($white,5)
+                                z-index: -1
+                                top: 10%
+                                right: -10%
+                                +transform(rotate(-20deg))
+                                +square(100px)
+                                +radius(25%)
+                                img
+                                    overflow: hidden
+                                    +radius(25%)
+                                    +square(100%)
+                            .event-description
+                                .title
+                                    font-size: 1.2em
+                                    margin-bottom: 0
+                        &:nth-child(1)
+                            .event-schedule
+                                .event-banner
+                                    top: 10%
+                                    right: -10%
+                                    +transform(rotate(-20deg))
+                        &:nth-child(2)
+                            .event-schedule
+                                .event-banner
+                                    top: 80%
+                                    right: 0
+                                    +transform(rotate(30deg))
+                        &:nth-child(3)
+                            .event-schedule
+                                .event-banner
+                                    top: -20%
+                                    left: 10%
+                                    +transform(rotate(20deg))
+                +screen(sm)
+                    .card-item
+                        height: 310px
+                        width: calc(50% - 24px)
+                    +screen(md)
+                        .card-item
+                            height: 310px
+                            width: calc(33.33% - 24px)
     
     
     //=============================================================================================================== FOOTER
@@ -921,17 +1092,15 @@ body
                         
         .footer-menu
             background: $black
-            padding: 50px
+            padding: 50px 0
             text-align: center
             .menu-item
-                padding: 12px
-            +screen(sm)
+                padding: 0 12px
+                line-height: 48px
+            +screen(md)
                 .menu-menu2-container
                     float: left
-                    height: 48px
                     line-height: 48px
-                .footer-logo
-                    float: right
                     
                     
                     
@@ -947,8 +1116,53 @@ body
         .clients
             display: none
             
-    // ----- DISPLAY BLOCK ONLY ON POST TYPE "POST"
-    &.post-template-default
+        // ---- STYLE FOR POST SCHEDULE
+        .event-schedule
+            margin: 15px
+            display: block
+            +screen(md)
+                width: 65%
+            .event-description
+                margin-top: 3em
+                margin-bottom: 4em
+                .tagline
+                    font-size: 1.1em
+                    margin-bottom: 10px
+                .description
+            .event-venue
+                margin-bottom: 3em
+                font-family: $font-mono
+                .venue-name,
+                .venue-date-time
+                    
+                    font-size: 2.3em
+                    font-size: 2em
+                .event-url
+                    color: lighten($black, 50)
+            .socials
+                color: lighten($black, 50)
+                .social
+                    display: inline-block
+                    margin-right: 32px
+                    margin-bottom: 24px
+                    .icon
+                        float: left
+                        margin-right: 12px
+                        .fa
+                            font-size: 3em
+                    .contact-person
+                        float: left
+                        height: 3em
+                        .name
+                            display: block
+                        .phone,
+                        .inst-url
+                            display: block
+            
+    // ----- DISPLAY BLOCK NEWS-MAIN-IMAGE CLASS ON POST_TYPE -> POST
+    // ----- PAGE-NEWS, PAGE-SCHEDULE
+    &.post-template-default,
+    &.page-schedule
         .news-main-image
             +screen(sm)
                 width: 100%
@@ -961,11 +1175,15 @@ body
                     height: 100%
                     object-fit: cover
                     object-position: center center
+    
+    // ----- DISPLAY BLOCK ONLY ON POST_TYPE -> POST, PAGE -> PAGE-HOME, PAGE-NEWS
     &.page-home,
-    &.page-news,
     &.post-template-default
         #custom_post
             display: block !important
+            #schedule
+                display: none
+            
             .custom-post-title-section
                 text-align: center
                 margin-top: 5em
@@ -978,8 +1196,9 @@ body
                     .video
                         display: block
                         min-width: 250px
+                        max-width: 300px
                         height: 150px
-                        margin: 0 15px
+                        margin: 0 auto
                         .video-thumb
                             object-fit: cover
                             object-position: center center
@@ -990,6 +1209,7 @@ body
                         .video
                             display: block
                             height: 150px
+                            width: 300px
                             .video-thumb
                                 object-fit: cover
                                 object-position: center center
@@ -1023,9 +1243,10 @@ body
                                 font-size: 3em
                                 line-height: 3em
                                 font-family: "FontAwesome"
-                li
+                .carousel-indicators > li
                     border-color: $black
                     padding: 0 12px
+                    margin: 0 8px
                     &.active
                         background-color: $black
                     &:hover

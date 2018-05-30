@@ -19,7 +19,7 @@ function scb_styles() {
 	wp_register_style( 'custom', get_template_directory_uri(). '/scb_theme.css', $dependencies, false );
 	wp_enqueue_style( 'custom' );
 	
-	wp_register_style('roboto', 'https://fonts.googleapis.com/css?family=Hammersmith+One|Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab');
+	wp_register_style('roboto', 'https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono|Roboto+Slab|Roboto:400,900');
 	wp_enqueue_style('roboto');
 	
 	wp_enqueue_style( 'style', get_stylesheet_uri() );

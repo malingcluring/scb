@@ -170,15 +170,20 @@ body
                     img
                         +img-clip
         .the-title
-            margin: 15px !important
+            //margin: 15px !important
+            margin-top: 15px !important
+            //margin-bottom: 15px
+            //padding: 0 15px
     
     //=================================================================================================================== N-O-T-P-A-G-E-H-O-M-E
     &:not(.page-home)
     
         //=============================================================================================================== THE TITLE       
         .the-title
-            margin: 15px
+            //margin: 15px
             margin-top: 3em
+            margin-bottom: 15px
+            padding: 0 15px
             display: block
             +screen(sm)
                 font-size: 7em
@@ -219,6 +224,8 @@ body
                 
     //=============================================================================================================== INTRO
     .entry-content
+        & > p
+            padding: 0 15px
         #intro
             margin: 50px 0
             h3

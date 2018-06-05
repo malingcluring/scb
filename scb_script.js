@@ -92,6 +92,11 @@ $(document).ready(function() {
 		$('.news-main-image').remove();
 	}
 	
+	if($('.bg-img-float .wrapper').children().length == 0) {
+		$('.bg-img-float').remove();
+		$('h1.the-title').css('padding-top', 50);
+	}
+	
 	
 	// CLIENT INTRO (PAGE OUR CLIENTS)
 	var $client_intro = $('.page-our-clients #client_intro').detach();

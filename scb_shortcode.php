@@ -1,7 +1,7 @@
 <?php
 
 
-// ---------------------------------------------------------------------------------------------------------------- GENERAL FUNCTION
+// ================================================================================================================== GENERAL FUNCTION
 //------------------------- get_category()
 	$categories = get_categories( $args );
 	$arrcategories=array();
@@ -10,8 +10,6 @@
 		$option_label = $category->name;
 		$arrcategories[$value] = $option_label;
 	endforeach;
-	
-	
 	
 	//------------------------- get all media gallery
 	$query_images_args = array(
@@ -27,15 +25,15 @@
 	foreach ( $query_images->posts as $image ) {
 		$images[] = wp_get_attachment_url( $image->ID );
 	}
-// ---------------------------------------------------------------------------------------------------------------- END GENERAL FUNCTION
+// ================================================================================================================== END GENERAL FUNCTION
 
 
 
 
 
 
-// ---------------------------------------------------------------------------------------------------------------- SHORTCODE ----------------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------- CONTAINER SHORTCODE
+// ================================================================================================================== SHORTCODE
+// ================================================================================================================== CONTAINER SHORTCODE
 	add_shortcode( 'column', 'scb_column' );
 	function scb_column(  $atts , $content , $tag ) {
 		$childs = explode('[/child]',$content);
@@ -58,12 +56,14 @@
 	function scb_col(  $atts , $content , $tag ) {
 		return $content;
 	}
-// ---------------------------------------------------------------------------------------------------------------- END CONTAINER SHORTCODE
+// ================================================================================================================== END OF CONTAINER SHORTCODE
 
 
 
 
-// ---------------------------------------------------------------------------------------------------------------- POST SHORTCODE
+
+
+// ================================================================================================================== POST SHORTCODE
 	add_shortcode('post', 'scb_post');
 	function scb_post($atts, $content=null){
 		$atts = shortcode_atts(array(
@@ -102,7 +102,7 @@
 							. '<div class="img-feature">' .get_the_post_thumbnail($id, 'thumbnail'). '</div>'
 							. '<div class="post-content">'
 							. 	'<h3>' .get_the_title(). '</h3>'
-							. 	'<p>' .wp_trim_words(preg_replace("/<img[^>]+\>/i", '', get_the_content()), 12, '...'). ' <a href="' .get_permalink(). '" class="btn btn-default btn-block">more</a></p>'
+							. 	'<p>' .wp_trim_words(preg_replace("/<img[^>]+\>/i", '', get_the_content()), 14, '...'). ' <a href="' .get_permalink(). '" class="btn btn-default btn-block">more</a></p>'
 							. '</div></div>';
 			}
 		}
@@ -111,20 +111,51 @@
 		
 		return '<div id="' .$post_id. '" class="display-posts">' .$temp. '</div>';
 	}
-// ---------------------------------------------------------------------------------------------------------------- END OF POST SHORTCODE	
-	
-	
-	
-	
-	
-	
-// ---------------------------------------------------------------------------------------------------------------- FULL POST SHORTCODE
+	shortcode_ui_register_for_shortcode(
+		'post',
+		array(
+			'label' => 'Choose Post Category',
+			'listItemImage' => 'dashicons-media-default',
+			'attrs' => array(
+				array(
+					'label' => 'Post Category',
+					'attr' => 'category',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+				array(
+					'label' => 'ID',
+					'attr' => 'post_id',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Post Count',
+					'attr' => 'count',
+					'type' => 'number',
+				),
+				array(
+					'label' => 'Post Title',
+					'attr' => 'title',
+					'type' => 'text',
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+// ================================================================================================================== END OF POST SHORTCODE
+
+
+
+
+
+
+// ================================================================================================================== POST FULL SHORTCODE
 	add_shortcode('post_full', 'scb_post_full');
 	function scb_post_full($atts, $content=null){
 		$atts = shortcode_atts(array(
 			'category' => '',
 			'post_id' => '',
-		), $atts, 'post_full');
+		), $atts, 'post');
 		
 		$post_id = $atts['post_id'];
 		$category = $atts['category'];
@@ -159,15 +190,14 @@
 		
 		return '<div id="' .$post_id. '" class="display-posts">' .$display. '</div>';
 	}
-	// ---------------------------------------------------------------------------------------------------------------- SET UI FOR FULL POST CATEGORY
 	shortcode_ui_register_for_shortcode(
 		'post_full',
 		array(
-			'label' => 'POST FULL',
+			'label' => 'Full Post Story',
 			'listItemImage' => 'dashicons-media-default',
 			'attrs' => array(
 				array(
-					'label' => 'Post Full',
+					'label' => 'Post Category',
 					'attr' => 'category',
 					'type' => 'select',
 					'options' => $arrcategories,
@@ -181,91 +211,14 @@
 			'post_type' => array( 'post', 'page' ),
 		)		
 	);
-// ---------------------------------------------------------------------------------------------------------------- END OF FULL POST SHORTCODE
+// ================================================================================================================== END POST FULL SHORTCODE
+// ================================================================================================================== END POST SHORTCODE
 
 
 
 
 
-
-// ---------------------------------------------------------------------------------------------------------------- THUMBNAIL POST ONLY SHORTCODE
-	add_shortcode('post_thumb', 'scb_post_thumb');
-	function scb_post_thumb($atts, $content=null){
-		$atts = shortcode_atts(array(
-			'category' => '',
-			'post_id' => '',
-			'title' => false,
-		), $atts, 'post_thumb');
-		
-		$post_id = ($atts['post_id']) ? ' id="' .$atts['post_id']. '"' : '';
-		$category = $atts['category'];
-		$title = ($atts['title']) ? '<h2>' .$atts['title']. '</h2>' : '';
-		
-		$args = array(
-			'post_type' 		=> 'post',
-			'orderby' 			=> 'date',
-			'order' 			=> 'DESC',
-			'cat'         		=> $category,
-			'update_post_term_cache' => false,
-			'update_post_meta_cache' => false,
-			'paged' 			=> get_query_var('paged'),
-			'nopaging' 			=> true,
-			'post_parent' 		=> $parent,
-		);
-	
-		$display = '';
-		$temp = '';
-		$query = new WP_Query( $args );
-		if( $query->have_posts() ){
-			while( $query->have_posts() ){
-				$query->the_post();
-				
-				$display .= '<div class="post-display-item">'
-							. '<div class="post-content">'
-							. 	'<div class="img-feature">' .get_the_post_thumbnail($id, 'thumbnail'). '</div>'
-							. 	'<p class="consultant-name"><a href="' .get_permalink(). '">' .get_the_title(). '</a></p>'
-							. '</div></div>';
-			}
-		}
-		wp_reset_postdata();
-		
-		return '<div ' .$post_id. ' class="display-posts">' .$title.$display. '</div>';
-	}
-	// ---------------------------------------------------------------------------------------------------------------- SET UI FOR THUMBNAIL POST ONLY
-	shortcode_ui_register_for_shortcode(
-		'post_thumb',
-		array(
-			'label' => 'POST THUMBNAIL ONLY',
-			'listItemImage' => 'dashicons-media-default',
-			'attrs' => array(
-				array(
-					'label' => 'TITLE',
-					'attr' => 'title',
-					'type' => 'text',
-				),
-				array(
-					'label' => 'Post Thumbnail',
-					'attr' => 'category',
-					'type' => 'select',
-					'options' => $arrcategories,
-				),
-				array(
-					'label' => 'ID',
-					'attr' => 'post_id',
-					'type' => 'text',
-				),
-			),
-			'post_type' => array( 'post', 'page' ),
-		)		
-	);
-// ---------------------------------------------------------------------------------------------------------------- END OF THUMBNAIL POST ONLY SHORTCODE
-// ---------------------------------------------------------------------------------------------------------------- END OF POST SHORTCODE
-
-
-
-
-
-// ---------------------------------------------------------------------------------------------------------------- TESTIMONY SHORTCODE
+// ================================================================================================================== TESTIMONY SHORTCODE
 	add_shortcode('testimony', 'scb_testimony');
 	function scb_testimony($atts, $content=null){
 		$atts = shortcode_atts(array(
@@ -308,14 +261,14 @@
 		
 		return '<div id="' .$post_id. '" class="display-posts">' .$temp. '</div>';
 	}
-// ---------------------------------------------------------------------------------------------------------------- END TESTIMONY SHORTCODE
+// ================================================================================================================== END OF TESTIMONY SHORTCODE
 
 
 
 
 
 
-// ---------------------------------------------------------------------------------------------------------------- BG IMG SHORTCODE (not use)
+// ================================================================================================================== BG IMG SHORTCODE
 	add_shortcode('background', 'scb_background');
 	function scb_background($atts, $content = null) {
 		$atts = shortcode_atts(array(
@@ -329,22 +282,22 @@
 					. '</div>';
 		return $result;	
 	}
-// ---------------------------------------------------------------------------------------------------------------- END BG IMG SHORTCODE
+// ================================================================================================================== END OF BG IMG SHORTCODE
 	
 	
 
 
 
-// ---------------------------------------------------------------------------------------------------------------- LIGHTBOX SHORTCODE
+// ================================================================================================================== LIGHTBOX SHORTCODE
 	add_shortcode('lightbox', 'scb_lightbox');
 	function scb_lightbox($atts, $content=null) {
 		
 		$atts = shortcode_atts(array(
-			'ids' => '',
-			'xclass' => '',
-			'vdid' => '',
+			'ids' => false,
+			'xclass' => false,
+			'vdid' => 'test',
 			'caption' => '',
-		), $atts, 'lightbox');
+		), $atts);
 		
 		$result = '';
 		$id = ($atts['ids']) ? 'id="' .$atts['ids']. '"' : '';
@@ -393,20 +346,26 @@
 			'post_type' => array('post', 'page'),
 		)
 	);
-// ---------------------------------------------------------------------------------------------------------------- END LIGHTBOX SHORTCODE
+// ================================================================================================================== END OF LIGHTBOX SHORTCODE
 
-// POST SELECT SHORTCODE
+
+
+
+
+// ================================================================================================================== POST SELECT SHORTCODE
 add_shortcode('post_select', 'scb_post_select');
 function scb_post_select($atts) {
 	
 	return '<p>' .$content. '</p>';
 }
-// END POST SELECT SHORTCODE
+// ================================================================================================================== END OF POST SELECT SHORTCODE
 
 
-// CARD SHORTCODE
 
 
+
+
+// ================================================================================================================== CARD SHORTCODE
 add_shortcode('card', 'scb_card');
 function card($atts, $content=null) {
 	$atts = shortcode_atts(array(
@@ -424,9 +383,14 @@ function card($atts, $content=null) {
 			. '</div>'
 			. '</div>';
 }
-// END CARD SHORTCODE
+// ================================================================================================================== END CARD SHORTCODE
 
-// container shortcode
+
+
+
+
+
+// ================================================================================================================== CONTAINER SHORTCODE 
 add_shortcode('container', 'scb_container');
 function scb_container($atts, $content=null) {
 	$atts = shortcode_atts(array(
@@ -445,63 +409,61 @@ function scb_colspan($atts, $content=null) {
 	$id = ($atts['ids']) ? 'id="' .$atts['ids']. '"' : '';
 	return '<div ' .$id. ' class="' .$atts['xclass']. ' col-sm-' .$atts['size']. '">' .do_shortcode($content). '</div>';
 }
-// container shortcode
+// ================================================================================================================== END OF CONTAINER SHORTCODE
 
 
-// Font Awesome
+
+
+
+// ================================================================================================================== FONT AWESOME SHORTCODE
 add_shortcode('icon', 'scb_icon');
-function scb_icon($atts) {
+function scb_icon($atts, $content=null) {
 	
-	$atts = shortcode_atts(
-		array(
-			'name' => '',
-			'icon_text' => '',
-			'link' => '',
-		),
-		$atts, 'icon'
-	);
-	$display = '';
-	$icon_name = ($atts['name']) ? '<span class="icon"><i class="fa fa-' .$atts['name']. '"></i></span>' : '<span class="icon"><i class="fa fa-send"></i></span>';
-	$text = ($atts['icon_text']) ? '<span>' .$atts['icon_text']. '</span>' : '';
-	$display = ($atts['link']) ? '<a href="' .$atts['link']. '" target="_blank">' .$icon_name. ' ' .$text. '</a>' : $icon_name. ' ' .$text ;
+	$atts = shortcode_atts(array(
+		'name' => '',
+		'text' => '',
+		'link' => '',
+	), $atts);
 	
-	return $display;
+	return '<a href="' .$atts['link']. '" target="_blank"><span class="icon">'
+			. 	'<i class="fa fa-' .$atts['name']. '"></i>'
+			. '</span>'
+			. '<span>' .$atts['text']. '</span></a>';
 }
-// ---------------------------------------------------------------------------------------------------------------- FONT AWESOME
-	shortcode_ui_register_for_shortcode(
-		'icon',
-		array(
-			'label' => 'ADD ICON',
-			'listItemImage' => 'dashicons-star-filled',
-			'attrs' => array(
-				array(
-					'label' => 'Icon Name',
-					'atts' => 'name',
-					'type' => 'text',
-				),
-				array(
-					'label' => 'Text Content',
-					'atts' => 'icon_text',
-					'type' => 'text',
-				),
-				array(
-					'label' => 'URL',
-					'atts' => 'link',
-					'type' => 'url',
-				),
+shortcode_ui_register_for_shortcode(
+	'icon',
+	array(
+		'label' => 'ADD ICON',
+		'listItemImage' => 'dashicons-star-filled',
+		'attrs' => array(
+			array(
+				'label' => 'Icon Name',
+				'atts' => 'name',
+				'type' => 'text',
 			),
-			'post_type' => array( 'post', 'page' ),
-		)		
-	);
-				
-// ---------------------------------------------------------------------------------------------------------------- END FONT AWESOME
-// end FA
+			array(
+				'label' => 'Text Content',
+				'atts' => 'text',
+				'type' => 'text',
+			),
+			array(
+				'label' => 'URL',
+				'atts' => 'link',
+				'type' => 'text',
+			),
+		),
+		'post_type' => array( 'post', 'page' ),
+	)		
+);
+// ================================================================================================================== END OF FONT AWESOME SHORTCODE
 
 
 
-// edited carousel
 
-// Carousel
+
+// ================================================================================================================== EDITED CAROUSEL
+// ================================================================================================================== CAROUSEL
+add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
 function scb_carousel_testimony(  $atts , $content , $tag ) {
 	
 	$atts = shortcode_atts(array(
@@ -529,32 +491,169 @@ function scb_carousel_testimony(  $atts , $content , $tag ) {
 			. '<div class="carousel-inner" role="listbox">'.$slide.'</div>'
 			. '</div>';
 }
-add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
+// ================================================================================================================== END OF CAROUSEL
+// ================================================================================================================== END OF EDITED CAROUSEL
 
-// end edited carousel
-// ---------------------------------------------------------------------------------------------------------------- END SHORTCODE
-	
 
+
+
+
+//  ================================================================================================================== SELECT POST NEW SHORTCODE
+add_shortcode('post_cat', 'scb_post_cat');
+function scb_post_cat($attr){
+	$atts = array(
+		'post' => '',
+	);
 	
-	
-	
-	
-	
-// SHORTCAKE
-// ---------------------------------------------------------------------------------------------------------------- SET UI FOR POST CATEGORY
-	
-	
-	
-	
-	// ---------------------------------------------------------------------------------------------------------------- SET UI FOR POST CATEGORY
+	$attr['post'] = array_map(
+		function( $post_id ) {
+			return get_the_title( $post_id );
+		},
+		array_filter( array_map( 'absint', explode( ',', $attr['post'] ) ) )
+	);
+}
 	shortcode_ui_register_for_shortcode(
-		'post',
+		'post_cat',
 		array(
-			'label' => 'TEXT POST WITH THUMBNAIL',
+			'label' => 'Post Category',
+			'listItemImage' => 'dashicons-editor-quote',
+			'attrs' => array(
+				array(
+					'label' => 'Select Post',
+					'atts' => 'post',
+					'type' => 'post_select',
+					'query' => array( 'post_type' => 'post' ),
+					'multiple' => true,
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)
+	);
+// ================================================================================================================== add_action( 'register_shortcode_ui', 'shortcode_ui_dev_advanced_example' );
+//  ================================================================================================================== END OF SELECT POST NEW SHORTCODE
+
+
+
+
+
+
+// ================================================================================================================== TIMELINE SHORTCODE
+	add_shortcode('timeline', 'scb_timeline');
+	function scb_timeline($attr, $content=null) {
+		$atts = shortcode_atts(array(
+			'category' => '',
+		), $atts, 'timeline');
+
+		$category = $attr['cat'];
+
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+		$return_string = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				$return_string .= '<div class="tl-container"><div class="tl-content">'
+								   //. '<h4><a href="'.get_permalink().'">'.get_the_title().'</a></h4>'
+								   . '<h4>'.get_the_title().'</h4>'
+								   . '<div class="tl-story">' .wp_trim_words(get_the_content(), 20, '...'). '</div>'
+								   . '</div></div>';
+			}
+		}
+		wp_reset_query();
+		return '<div id="timeline" class="col-sm-12"><h2>Our Achievement</h2> ' .$return_string. '</div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'timeline',
+		array(
+			'label' => 'TIMELINE',
 			'listItemImage' => 'dashicons-media-default',
 			'attrs' => array(
 				array(
-					'label' => 'Post Category',
+					'label' => 'Add The Timeline',
+					'attr' => 'cat',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+
+// ================================================================================================================== END OF TIMELINE SHORTCODE
+
+
+
+
+
+
+// ================================================================================================================== POST THUMBNAIL ONLY SHORTCODE
+	add_shortcode('post_thumb', 'scb_post_thumb');
+	function scb_post_thumb($atts, $content=null){
+		$atts = shortcode_atts(array(
+			'category' => '',
+			'post_id' => '',
+			'title' => false,
+		), $atts, 'post');
+		
+		$post_id = ($atts['post_id']) ? ' id="' .$atts['post_id']. '"' : '';
+		$category = $atts['category'];
+		$title = ($atts['title']) ? '<h2>' .$atts['title']. '</h2>' : '';
+		
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
+	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<div class="img-feature">' .get_the_post_thumbnail($id, 'thumbnail'). '</div>'
+							. 	'<p class="consultant-name"><a href="' .get_permalink(). '">' .get_the_title(). '</a></p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div ' .$post_id. ' class="display-posts">' .$title.$display. '</div>';
+	}
+
+	// pot thumb UI shortcake
+	shortcode_ui_register_for_shortcode(
+		'post_thumb',
+		array(
+			'label' => 'POST THUMBNAIL ONLY',
+			'listItemImage' => 'dashicons-media-default',
+			'attrs' => array(
+				array(
+					'label' => 'TITLE',
+					'attr' => 'title',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Post Thumbnail',
 					'attr' => 'category',
 					'type' => 'select',
 					'options' => $arrcategories,
@@ -564,98 +663,18 @@ add_shortcode( 'carousel_testimony', 'scb_carousel_testimony' );
 					'attr' => 'post_id',
 					'type' => 'text',
 				),
-				array(
-					'label' => 'Post Count',
-					'attr' => 'count',
-					'type' => 'number',
-				),
-				array(
-					'label' => 'Post Title',
-					'attr' => 'title',
-					'type' => 'text',
-				),
 			),
 			'post_type' => array( 'post', 'page' ),
 		)		
 	);
-// ---------------------------------------------------------------------------------------------------------------- END SET UI FOR POST CATEGORY
-// ---------------------------------------------------------------------------------------------------------------- END SET UI FOR POST CATEGORY
+// ================================================================================================================== END OF POST THUMBNAIL ONLY SHORTCODE
 
 
 
 
 
 
-
-// TIMELINE SHORTCODE
-add_shortcode('timeline', 'scb_timeline');
-function scb_timeline($attr, $content=null) {
-	$atts = shortcode_atts(array(
-		'category' => '',
-	), $atts, 'timeline');
-	
-	$category = $attr['cat'];
-	
-	$args = array(
-		'post_type' 		=> 'post',
-		'orderby' 			=> 'date',
-		'order' 			=> 'DESC',
-		'cat'         		=> $category,
-		'update_post_term_cache' => false,
-		'update_post_meta_cache' => false,
-		'paged' 			=> get_query_var('paged'),
-		'nopaging' 			=> true,
-		'post_parent' 		=> $parent,
-	);
-	$return_string = '';
-	$query = new WP_Query( $args );
-	if( $query->have_posts() ){
-		while( $query->have_posts() ){
-			$query->the_post();
-			$return_string .= '<div class="tl-container"><div class="tl-content">'
-							   . '<h4><a href="'.get_permalink().'">'.get_the_title().'</a></h4>'
-							   . '<div class="tl-story">' .wp_trim_words(get_the_content(), 20, '...'). '</div>'
-							   . '</div></div>';
-		}
-	}
-	wp_reset_query();
-	return '<div id="timeline" class="col-sm-12"><h2>Our Achievement</h2> ' .$return_string. '</div>';
-}
-shortcode_ui_register_for_shortcode(
-	'timeline',
-	array(
-		'label' => 'TIMELINE',
-		'listItemImage' => 'dashicons-media-default',
-		'attrs' => array(
-			array(
-				'label' => 'Add The Timeline',
-				'attr' => 'cat',
-				'type' => 'select',
-				'options' => $arrcategories,
-			),
-		),
-		'post_type' => array( 'post', 'page' ),
-	)		
-);
-
-
-
-
-// =========================== ROW
-add_shortcode('row', 'scb_row');
-function scb_row($atts, $content=null) {
-	$ats = shortcode_atts(array(
-		'id' => false,
-		'class' => false,
-	), $atts, 'row');
-	
-	$id= ($atts['id']) ? ' id="' .$atts['id']. '"' : '';
-	
-	return '<div' .$id. ' class="row ' .$atts['class']. '">' .do_shortcode($content). '</div>';
-}
-
-
-// -------------------------------- NEWS SCORTCODE
+// ================================================================================================================== NEWS SCORTCODE
 	add_shortcode('post_news', 'scb_post_news');
 	function scb_post_news($atts, $content=null){
 		$atts = shortcode_atts(array(
@@ -664,7 +683,6 @@ function scb_row($atts, $content=null) {
 		
 		$category = $atts['cat'];
 		
-		//$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 		$args = array(
 			'post_type' 		=> 'post',
 			'orderby' 			=> 'date',
@@ -721,11 +739,156 @@ function scb_row($atts, $content=null) {
 			'post_type' => array( 'post', 'page' ),
 		)		
 	);
+// ================================================================================================================== END OF NEWS SCORTCODE
+
+
+
+
+ 
+// ================================================================================================================== PAGE INTRO SECTION
+	add_shortcode('intro', 'scb_intro');
+	function scb_intro($atts, $content=null){
+		$atts = shortcode_atts(array(
+			'category' => '',
+			'post_id' => '',
+		), $atts, 'intro');
+		
+		$post_id = $atts['post_id'];
+		$category = $atts['category'];
+		
+		$args = array(
+			'post_type' 		=> 'post',
+			'orderby' 			=> 'date',
+			'order' 			=> 'DESC',
+			'cat'         		=> $category,
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
 	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="intro" class="col-sm-12"><div class="row"><div class="col-sm-6"><div id="' .$post_id. '" class="display-posts">' .$display. '</div></div></div></div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'intro',
+		array(
+			'label' => 'ADD PAGE INTRO',
+			'listItemImage' => 'dashicons-format-quote',
+			'attrs' => array(
+				array(
+					'label' => 'Add Intro ID',
+					'attr' => 'post_id',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Choose Intro Category Page',
+					'attr' => 'category',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+			),
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+// ================================================================================================================== END OF PAGE INTRO SECTION
+
+
+
+
+
+
+// ================================================================================================================== NEW SHORTCODE FOR ABOUT US PAGE
+	add_shortcode('profile', 'scb_profile');
+	function scb_profile($content=null){
+		$args = array(
+			'post_type' 		=> 'post',
+			'category_name'		=> 'profile',
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
 	
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				
+				$display .= '<div class="post-display-item">'
+							. '<div class="post-content">'
+							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
+							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
+							. '</div></div>';
+			}
+		}
+		wp_reset_postdata();
+		
+		return '<div id="profile" class="col-sm-7"><div id="profile_1" class="display-posts">' .$display. '</div></div>';
+	}
+
+	add_shortcode('profile_card', 'scb_profile_card');
+	function scb_profile_card($content=null){
+		$args = array(
+			'post_type' 		=> 'post',
+			'category_name'		=> 'profile-card',
+			'paged' 			=> get_query_var('paged'),
+			'nopaging' 			=> true,
+			'post_parent' 		=> $parent,
+		);
 	
-// ----------------------------------------------------------------- SHORTCODE PAGE CONTACT US
-// -------------------------------------------- GOOGLE MAPS
+		$display = '';
+		$temp = '';
+		$query = new WP_Query( $args );
+		if( $query->have_posts() ){
+			while( $query->have_posts() ){
+				$query->the_post();
+				$display .= '<div class="post-display-item">'
+							. 	'<a href="' .get_permalink(). '"><h3>' .get_the_title(). '</h3></a>'
+							. 	'<div class="profile-card-content">' .do_shortcode(get_the_content(), $content). '</div>'
+							. '</div>';
+			}
+		}
+		wp_reset_postdata();
+		return '<div id="profile_intro" class="col-sm-5">' .$display. '</div>';
+	}
+	
+	add_shortcode('about_profiles', 'scb_about_profiles');
+	function scb_about_profiles(){
+		return '<div id="about_profiles" class="col-sm-12"><div class="row"><h2 class="expertise text-center">Our Experts</h2>' .do_shortcode('[profile_card]'.'[profile]'). '</div></div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'about_profiles',
+		array(
+			'label' => 'ADD ABOUT PROFILE INFO',
+			'listItemImage' => 'dashicons-admin-users',
+			'post_type' => array( 'post', 'page' ),
+		)		
+	);
+// ================================================================================================================== END OF NEW SHORTCODE FOR ABOUT US PAGE
+
+
+
+
+
+
+// ================================================================================================================== SHORTCODE PAGE CONTACT US
+	// -------------------------------------------- GOOGLE MAPS SHORTCODE section
 	add_shortcode('google_map', 'scb_google_map');
 	function scb_google_map($atts) {
 		//$atts = shortcode_atts(array(
@@ -743,7 +906,7 @@ function scb_row($atts, $content=null) {
 		)		
 	);
 	
-// -------------------------------------------- CONTACT DETAIL
+	// -------------------------------------------- CONTACT DETAIL SHORTCODE section
 	add_shortcode('contact', 'scb_contact');
 	function scb_contact($atts, $content=null) {
 		$atts = shortcode_atts(array(
@@ -833,157 +996,16 @@ function scb_row($atts, $content=null) {
 			'post_type' => array( 'post', 'page' ),
 		)		
 	);
-	
-	
-	
-	
-	
-	// ------------------------------------------ NEW SHORTCODE FOR ABOUT US PAGE
-	add_shortcode('profile', 'scb_profile');
-	function scb_profile($content=null){
-		$args = array(
-			'post_type' 		=> 'post',
-			'category_name'		=> 'profile',
-			'paged' 			=> get_query_var('paged'),
-			'nopaging' 			=> true,
-			'post_parent' 		=> $parent,
-		);
-	
-		$display = '';
-		$temp = '';
-		$query = new WP_Query( $args );
-		if( $query->have_posts() ){
-			while( $query->have_posts() ){
-				$query->the_post();
-				
-				$display .= '<div class="post-display-item">'
-							. '<div class="post-content">'
-							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
-							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
-							. '</div></div>';
-			}
-		}
-		wp_reset_postdata();
-		
-		return '<div id="profile" class="col-sm-7"><div id="profile_1" class="display-posts">' .$display. '</div></div>';
-	}
-	
-
-	add_shortcode('profile_card', 'scb_profile_card');
-	function scb_profile_card($content=null){
-		$args = array(
-			'post_type' 		=> 'post',
-			'category_name'		=> 'profile-card',
-			'paged' 			=> get_query_var('paged'),
-			'nopaging' 			=> true,
-			'post_parent' 		=> $parent,
-		);
-	
-		$display = '';
-		$temp = '';
-		$query = new WP_Query( $args );
-		if( $query->have_posts() ){
-			while( $query->have_posts() ){
-				$query->the_post();
-				$display .= '<div class="post-display-item">'
-							. 	'<a href="' .get_permalink(). '"><h3>' .get_the_title(). '</h3></a>'
-							. 	'<div class="profile-card-content">' .do_shortcode(get_the_content(), $content). '</div>'
-							. '</div>';
-			}
-		}
-		wp_reset_postdata();
-		return '<div id="profile_intro" class="col-sm-5">' .$display. '</div>';
-	}
-	
-	add_shortcode('about_profiles', 'scb_about_profiles');
-	function scb_about_profiles(){
-		return '<div id="about_profiles" class="col-sm-12">
-					<div class="row">
-						<h2 class="expertise text-center">Our Experts</h2>'
-						.do_shortcode('[profile_card]'.'[profile]').
-					'</div>
-				</div>';
-	}
-	shortcode_ui_register_for_shortcode(
-		'about_profiles',
-		array(
-			'label' => 'ADD ABOUT PROFILE INFO',
-			'listItemImage' => 'dashicons-admin-users',
-			'post_type' => array( 'post', 'page' ),
-		)		
-	);
-
-?>
+// ================================================================================================================== END OF SHORTCODE PAGE CONTACT US
 
 
-<?php
-// ================================= PAGE INTRO SECTION
-	add_shortcode('intro', 'scb_intro');
-	function scb_intro($atts, $content=null){
-		$atts = shortcode_atts(array(
-			'category' => '',
-			'post_id' => '',
-		), $atts, 'intro');
-		
-		$post_id = $atts['post_id'];
-		$category = $atts['category'];
-		
-		$args = array(
-			'post_type' 		=> 'post',
-			'orderby' 			=> 'date',
-			'order' 			=> 'DESC',
-			'cat'         		=> $category,
-			'paged' 			=> get_query_var('paged'),
-			'nopaging' 			=> true,
-			'post_parent' 		=> $parent,
-		);
-	
-		$display = '';
-		$temp = '';
-		$query = new WP_Query( $args );
-		if( $query->have_posts() ){
-			while( $query->have_posts() ){
-				$query->the_post();
-				
-				$display .= '<div class="post-display-item">'
-							. '<div class="post-content">'
-							. 	'<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>'
-							. 	'<p>' .do_shortcode(get_the_content(), $content). '</p>'
-							. '</div></div>';
-			}
-		}
-		wp_reset_postdata();
-		
-		return '<div id="intro" class="col-sm-12"><div class="row"><div class="col-sm-6"><div id="' .$post_id. '" class="display-posts">' .$display. '</div></div></div></div>';
-	}
-	shortcode_ui_register_for_shortcode(
-		'intro',
-		array(
-			'label' => 'ADD PAGE INTRO',
-			'listItemImage' => 'dashicons-format-quote',
-			'attrs' => array(
-				array(
-					'label' => 'Add Intro ID',
-					'attr' => 'post_id',
-					'type' => 'text',
-				),
-				array(
-					'label' => 'Choose Intro Category Page',
-					'attr' => 'category',
-					'type' => 'select',
-					'options' => $arrcategories,
-				),
-			),
-			'post_type' => array( 'post', 'page' ),
-		)		
-	);
 
-	
-	
-	
-	// =================== SCB MODEL CORPORATE CULTURE PAGE
-	add_shortcode('corporate_culture_model', 'scb_corporate_culture_model');
-	function scb_corporate_culture_model() {
+
+
+
+// ================================================================================================================== SCB MODEL CORPORATE CULTURE PAGE
+	add_shortcode('model', 'scb_model');
+	function scb_model() {
 		$args = array(
 			'post_type' => 'post',
 			'category_name' => 'corporate-culture-model',
@@ -992,7 +1014,7 @@ function scb_row($atts, $content=null) {
 		
 		$query = new WP_Query($args);
 		
-		$content = '<div class="col-sm-12"><div class="row">';
+		$content = '';
 		if($query->have_posts()) {
 			while($query->have_posts()) {
 				$query->the_post();
@@ -1000,323 +1022,322 @@ function scb_row($atts, $content=null) {
 								<h3><a href="' .get_permalink(). '">' .get_the_title(). '</a></h3>
 								<h4>how to build corporate</h4>
 								<div class="model-thumb">' .get_the_post_thumbnail(). '</div>
-							</div>';
+							</div>
+							<div class="scb-carousel col-sm-8">';
 			}
 		}
 		
-		return $content. '<div class="scb-carousel col-sm-8">' .do_shortcode('[image-carousel category="corporate-culture" orderby="page" order="ASC"]'). '</div></div></div>';
+		return $content;
+	}
+	
+	add_shortcode('corporate_culture_model', 'scb_corporate_culture_model');
+	function scb_corporate_culture_model() {
+		return '<div class="col-sm-12">
+					<div class="row">
+						' .do_shortcode('[model]'.'[image-carousel category="corporate-culture" orderby="page" order="ASC"]'). '</div>
+					</div>
+				</div>';
 	}
 	shortcode_ui_register_for_shortcode(
 		'corporate_culture_model',
 		array(
-			'label' => 'SCB CORPORATE CULTURE MODEL',
+			'label' => 'SCB MODEL',
 			'listItemImage' => 'dashicons-admin-settings',
 			'post_type' => array( 'post', 'page' ),
 		)
 	);
-	
-	
+// ================================================================================================================== END OF SCB MODEL CORPORATE CULTURE PAGE
 
 
 
 
 
-// ================= TOP CONSULTANT SHORTCODE
-add_shortcode('top_consultant', 'scb_top_consultant');
-function scb_top_consultant($atts, $content) {
-	$atts = shortcode_atts(array(
-		'id' => '',
-		'title' => '',
-		'category' => ''
-	), $atts, 'top_consultant');
-	
-	$id = ($atts['id']) ? ' id="' .$atts['id']. '"' : '';
-	$title= ($atts['title']) ? '<h2 class="section-title">' .$atts['title']. '</h2>' : '';
-	$category = $atts['category'];
-	
-	$post_args = array(
-		'post_type' => 'post',
-		'cat' => $category
+
+// ================================================================================================================== TOP CONSULTANT SHORTCODE
+	add_shortcode('top_consultant', 'scb_top_consultant');
+	function scb_top_consultant($atts, $content) {
+		$atts = shortcode_atts(array(
+			'id' => '',
+			'title' => '',
+			'category' => ''
+		), $atts, 'top_consultant');
+
+		$id = ($atts['id']) ? ' id="' .$atts['id']. '"' : '';
+		$title= ($atts['title']) ? '<h2 class="section-title">' .$atts['title']. '</h2>' : '';
+		$category = $atts['category'];
+
+		$post_args = array(
+			'post_type' => 'post',
+			'cat' => $category
+		);
+
+		$query = new wp_query($post_args);
+
+		$post_content = '<div id="top_consultant" class="col-sm-12 top-consultant">
+							' .$title. '
+							<div ' .$id. ' class="display-posts">';
+
+		if($query->have_posts()) {
+			while($query->have_posts()) {
+				$query->the_post();
+				$post_content .= '<div class="post-display-item">
+									<div class="post-content">
+										<div class="img-feature">' .get_the_post_thumbnail(). '</div>
+										<h5 class="consultant-name"><a href="' .get_permalink(). '">' .get_the_title(). '</a></h5>
+									</div>
+								</div>';
+			}
+		}
+
+		return $post_content. '</div></div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'top_consultant',
+		array(
+			'label' => 'TOP CONSULTANT',
+			'listItemImage' => 'dashicons-edit',
+			'attrs' => array(
+				array(
+					'label' => 'Enter an ID',
+					'description' => 'ID is required',
+					'attr' => 'id',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Add Section Title',
+					'attr' => 'title',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Choose Post Category',
+					'attr' => 'category',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+			),
+			'post_type' => array('post', 'page'),
+		)
 	);
-	
-	$query = new wp_query($post_args);
-	
-	$post_content = '<div id="top_consultant" class="col-sm-12 top-consultant">
-						' .$title. '
-						<div ' .$id. ' class="display-posts">';
-	
-	if($query->have_posts()) {
-		while($query->have_posts()) {
-			$query->the_post();
-			$post_content .= '<div class="post-display-item">
-								<div class="post-content">
-									<div class="img-feature">' .get_the_post_thumbnail(). '</div>
-									<h5 class="consultant-name"><a href="' .get_permalink(). '">' .get_the_title(). '</a></h5>
+// ================================================================================================================== END OF TOP CONSULTANT SHORTCODE
+
+
+
+
+
+// ================================================================================================================== EVENT SCHEDULE SHORTCODE FOR POST AND PAGE-SCHEDULE
+// ============================================== ADD EVENT
+	add_shortcode('event_schedule', 'scb_event_schedule');
+	function scb_event_schedule($atts, $content=null, $tag) {
+		$atts = shortcode_atts(array(
+			'attachment' => '',
+			'title' => '',
+			'tagline' => 'Tagline',
+			'desc' => 'Event Description',
+			'venue_name' => 'Venue',
+			'event_date' => 'Date Time',
+			'event_url' => '',
+			'wa_name' => 'Jayasaf',
+			'wa_number' => '+62 896 2485 9082',
+			'instagram_name' => 'Great.speaker',
+			'instagram_url' => 'https://www.instagram.com/great.speaker/'
+		), $atts, 'event_schedule');
+
+		$attachment = $atts['attachment'];
+		$title = ($atts['title']) ? '<h3 class="title">' .$atts['title']. '</h3>' : '';
+		$tagline = ($atts['tagline']) ? '<div class="tagline">' .$atts['tagline']. '</div>' : '';
+		$desc = ($atts['desc']) ? '<div class="description">' .$atts['desc']. '</div>' : '';
+		$venue_name = $atts['venue_name'];
+		$event_date = $atts['event_date'];
+		$event_url = ($atts['event_url']) ? '<div class="event-url">' .$atts['event_url']. '</div>' : '';
+		$wa_name = $atts['wa_name'];
+		$wa_number = $atts['wa_number'];
+		$inst_name = $atts['instagram_name'];
+		$inst_url = $atts['instagram_url'];
+
+		$images =& get_children( array (
+			'post_parent' => $post->ID,
+			'post_type' => 'attachment',
+			'post_mime_type' => 'image'
+		));
+		$images = wp_get_attachment_image( $attachment, 'medium' );
+
+		$schedule_display = '<div class="event-schedule">
+								<div class="event-banner">' .$images. '</div>
+								<div class="event-description">
+									' .$title.$tagline.$desc. '
+								</div>
+								<div class="event-venue">
+									<div class="venue-name">' .$venue_name. '</div>
+									<div class="venue-date-time">' .$event_date. '</div>
+									' .$event_url. '
+								</div>
+								<div class="socials">
+									<div class="whatsapp social">
+										<span class="icon">
+											<i class="fa fa-whatsapp"></i>
+										</span>
+										<span class="contact-person">
+											<span class="name">' .$wa_name. '</span>
+											<span class="phone">' .$wa_number. '</span>
+										</span>
+									</div>
+									<div class="instagram social">
+										<span class="icon">
+											<i class="fa fa-instagram"></i>
+										</span>
+										<span class="contact-person">
+											<span class="name">' .$inst_name. '</span>
+											<span class="inst-url">' .$inst_url. '</span>
+										</span>
+									</div>
 								</div>
 							</div>';
+
+		return $schedule_display;
+	}
+	shortcode_ui_register_for_shortcode(
+		'event_schedule',
+		array(
+			'label' => 'ADD EVENT SCHEDULE',
+			'listItemImage' => 'dashicons-pressthis',
+			'attrs' => array(
+				array(
+					'label'       => 'Add Event Banner',
+					'attr'        => 'attachment',
+					'type'        => 'attachment',
+					'libraryType' => array( 'image' ),
+					'addButton'   => esc_html__( 'Select Image' ),
+					'frameTitle'  => esc_html__( 'Select Image' ),
+				),
+				array(
+					'label' => 'Enter Event Title',
+					'description' => 'Required',
+					'attr' => 'title',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Event Venue',
+					'description' => 'Required',
+					'attr' => 'venue_name',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Event Date Time',
+					'description' => 'Required',
+					'attr' => 'event_date',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Event/Venue URL',
+					'description' => 'Required',
+					'attr' => 'event_url',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Event Tagline',
+					'description' => 'or leave blank if event not have tagline',
+					'attr' => 'tagline',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Event Description',
+					'description' => 'or leave blank if event not have description',
+					'attr' => 'desc',
+					'type' => 'textarea',
+				),
+				array(
+					'label' => 'Enter Person In Charge',
+					'description' => 'Leave it blank for default PIC (Whatsapp name: Jayasaf)',
+					'attr' => 'wa_name',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Contact for Person In Charge',
+					'description' => 'Leave it blank for default PIC (Whatsapp number: +62 896 2485 9082)',
+					'attr' => 'wa_number',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Instagram Account',
+					'description' => 'Leave it blank for default Instagram account (great.speaker)',
+					'attr' => 'instagram_name',
+					'type' => 'text',
+				),
+				array(
+					'label' => 'Enter Instagram URL',
+					'description' => 'Leave it blank for default Instagram URL (https://www.instagram.com/great.speaker/)',
+					'attr' => 'instagram_url',
+					'type' => 'text',
+				),
+			),
+			'post_type' => array('post', 'page'),
+		)
+	);
+// ============================================== END OF ADD EVENT
+
+// ============================================== ADD EVENT CARD ON SCHEDULE PAGE
+	add_shortcode('event_card', 'scb_event_card');
+	function scb_event_card($atts, $content=null, $tag) {
+		$atts = shortcode_atts(array(
+			'post' => '',
+			'id' => ''
+		), $atts, 'event_card');
+		$post = $atts['post'];
+
+		$query_args = array(
+			//'p' => $post
+			'cat' => $post,
+			'orderby' => 'date',
+			'order' => 'ASC',
+		);
+
+		$query = new WP_Query( $query_args );
+		while($query->have_posts()) {
+			$query->the_post();
+			$content = get_the_content();
+			$link = get_the_permalink();
+			$card .='<a href="' .$link. '">' .$content. '</a>';
 		}
-	}
-	
-	return $post_content. '</div></div>';
-}
-shortcode_ui_register_for_shortcode(
-	'top_consultant',
-	array(
-		'label' => 'TOP CONSULTANT',
-		'listItemImage' => 'dashicons-edit',
-		'attrs' => array(
-			array(
-				'label' => 'Enter an ID',
-				'description' => 'ID is required',
-				'attr' => 'id',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Add Section Title',
-				'attr' => 'title',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Choose Post Category',
-				'attr' => 'category',
-				'type' => 'select',
-				'options' => $arrcategories,
-			),
-		),
-		'post_type' => array('post', 'page'),
-	)
-);
+		
+		$content = apply_filters('the_content', $content);
+		$content = str_replace(']]>', ']]&gt;', $content);
 
-// ============================= fixed custom post
-add_shortcode('fixed_custom_post', 'scb_fixed_custom_post');
-function scb_fixed_custom_post() {
-	
-	$post_args = array(
-		'post_type' => 'post',
-		'posts_per_page' => 3,
-		'category_name' => 'video-testimony'
+		return '<div class="event-schedule-card">
+					<div id="' .$atts['id']. '" class="card-item">
+						<div class="month">' .$atts['id']. '</div>'
+						.do_shortcode($card, $content).
+					'</div>
+				</div>';
+	}
+	shortcode_ui_register_for_shortcode(
+		'event_card',
+		array(
+			'label' => 'ADD EVENT CARD',
+			'listItemImage' => 'dashicons-exerpt-view',
+			'attrs' => array(
+				array(
+					'label' => 'Choose Month Event',
+					'attr' => 'post',
+					'type' => 'select',
+					'options' => $arrcategories,
+				),
+				array(
+					'label' => 'Card Month ID',
+					'attr' => 'id',
+					'type' => 'text',
+				),
+			),
+			'post_type' => array('post', 'page'),
+		)
 	);
-	$query = new wp_query($post_args);
-	$content = '';
-	while($query-> have_posts()) {
-		$content .= the_content();
-	}
-	wp_reset_query();
-	
-	return '<div class="testimony-custom-post">' .$content. '</div>';
-}
+// ============================================== END OF ADD EVENT CARD ON SCHEDULE PAGE
+// ================================================================================================================== EVENT SCHEDULE SHORTCODE FOR POST AND PAGE-SCHEDULE
 
-// ============================================== EVENT SCHEDULE
-// ============================================== ADD EVENT
-add_shortcode('event_schedule', 'scb_event_schedule');
-function scb_event_schedule($atts, $content=null, $tag) {
-	$atts = shortcode_atts(array(
-		'attachment' => '',
-		'title' => '',
-		'tagline' => 'Tagline',
-		'desc' => 'Event Description',
-		'venue_name' => 'Venue',
-		'event_date' => 'Date Time',
-		'event_url' => '',
-		'wa_name' => 'Jayasaf',
-		'wa_number' => '+62 896 2485 9082',
-		'instagram_name' => 'Great.speaker',
-		'instagram_url' => 'https://www.instagram.com/great.speaker/'
-	), $atts, 'event_schedule');
-	
-	$attachment = $atts['attachment'];
-	$title = ($atts['title']) ? '<h3 class="title">' .$atts['title']. '</h3>' : '';
-	$tagline = ($atts['tagline']) ? '<div class="tagline">' .$atts['tagline']. '</div>' : '';
-	$desc = ($atts['desc']) ? '<div class="description">' .$atts['desc']. '</div>' : '';
-	$venue_name = $atts['venue_name'];
-	$event_date = $atts['event_date'];
-	$event_url = ($atts['event_url']) ? '<div class="event-url">' .$atts['event_url']. '</div>' : '';
-	$wa_name = $atts['wa_name'];
-	$wa_number = $atts['wa_number'];
-	$inst_name = $atts['instagram_name'];
-	$inst_url = $atts['instagram_url'];
-	
-	$images =& get_children( array (
-		'post_parent' => $post->ID,
-		'post_type' => 'attachment',
-		'post_mime_type' => 'image'
-	));
-	$images = wp_get_attachment_image( $attachment, 'medium' );
-	
-	$schedule_display = '<div class="event-schedule">
-							<div class="event-banner">' .$images. '</div>
-							<div class="event-description">
-								' .$title.$tagline.$desc. '
-							</div>
-							<div class="event-venue">
-								<div class="venue-name">' .$venue_name. '</div>
-								<div class="venue-date-time">' .$event_date. '</div>
-								' .$event_url. '
-							</div>
-							<div class="socials">
-								<div class="whatsapp social">
-									<span class="icon">
-										<i class="fa fa-whatsapp"></i>
-									</span>
-									<span class="contact-person">
-										<span class="name">' .$wa_name. '</span>
-										<span class="phone">' .$wa_number. '</span>
-									</span>
-								</div>
-								<div class="instagram social">
-									<span class="icon">
-										<i class="fa fa-instagram"></i>
-									</span>
-									<span class="contact-person">
-										<span class="name">' .$inst_name. '</span>
-										<span class="inst-url">' .$inst_url. '</span>
-									</span>
-								</div>
-							</div>
-						</div>';
-	
-	return $schedule_display;
-}
-shortcode_ui_register_for_shortcode(
-	'event_schedule',
-	array(
-		'label' => 'ADD EVENT SCHEDULE',
-		'listItemImage' => 'dashicons-pressthis',
-		'attrs' => array(
-			array(
-				'label'       => 'Add Event Banner',
-				'attr'        => 'attachment',
-				'type'        => 'attachment',
-				'libraryType' => array( 'image' ),
-				'addButton'   => esc_html__( 'Select Image' ),
-				'frameTitle'  => esc_html__( 'Select Image' ),
-			),
-			array(
-				'label' => 'Enter Event Title',
-				'description' => 'Required',
-				'attr' => 'title',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Event Venue',
-				'description' => 'Required',
-				'attr' => 'venue_name',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Event Date Time',
-				'description' => 'Required',
-				'attr' => 'event_date',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Event/Venue URL',
-				'description' => 'Required',
-				'attr' => 'event_url',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Event Tagline',
-				'description' => 'or leave blank if event not have tagline',
-				'attr' => 'tagline',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Event Description',
-				'description' => 'or leave blank if event not have description',
-				'attr' => 'desc',
-				'type' => 'textarea',
-			),
-			array(
-				'label' => 'Enter Person In Charge',
-				'description' => 'Leave it blank for default PIC (Whatsapp name: Jayasaf)',
-				'attr' => 'wa_name',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Contact for Person In Charge',
-				'description' => 'Leave it blank for default PIC (Whatsapp number: +62 896 2485 9082)',
-				'attr' => 'wa_number',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Instagram Account',
-				'description' => 'Leave it blank for default Instagram account (great.speaker)',
-				'attr' => 'instagram_name',
-				'type' => 'text',
-			),
-			array(
-				'label' => 'Enter Instagram URL',
-				'description' => 'Leave it blank for default Instagram URL (https://www.instagram.com/great.speaker/)',
-				'attr' => 'instagram_url',
-				'type' => 'text',
-			),
-		),
-		'post_type' => array('post', 'page'),
-	)
-);
 
-// ============================================== ADD EVENT CARD
-add_shortcode('event_card', 'scb_event_card');
-function scb_event_card($atts, $content=null, $tag) {
-	$atts = shortcode_atts(array(
-		'post' => '',
-		'id' => ''
-	), $atts, 'event_card');
-	$post = $atts['post'];
-	
-	$query_args = array(
-		//'p' => $post
-		'cat' => $post,
-		'orderby' => 'date',
-		'order' => 'ASC',
-	);
-	
-	$query = new WP_Query( $query_args );
-	while($query->have_posts()) {
-		$query->the_post();
-		$content = get_the_content();
-		$link = get_the_permalink();
-		$card .='<a href="' .$link. '">' .$content. '</a>';
-	}
-	//$post_types = $query->get( 'post_type' );
-	//$content_post = get_post($post);
-	//$content = $content_post->post_content;
-	$content = apply_filters('the_content', $content);
-	$content = str_replace(']]>', ']]&gt;', $content);
-	
-	//$card = '<a href="' .$link. '">' .$content. '</a>';
-	
-	return '<div class="event-schedule-card">
-				<div id="' .$atts['id']. '" class="card-item">
-					<div class="month">' .$atts['id']. '</div>'
-					.do_shortcode($card, $content).
-				'</div>
-			</div>';
-}
-shortcode_ui_register_for_shortcode(
-	'event_card',
-	array(
-		'label' => 'ADD EVENT CARD',
-		'listItemImage' => 'dashicons-exerpt-view',
-		'attrs' => array(
-			array(
-				'label' => 'Choose Month Event',
-				'attr' => 'post',
-				'type' => 'select',
-				'options' => $arrcategories,
-			),
-			array(
-				'label' => 'Card Month ID',
-				'attr' => 'id',
-				'type' => 'text',
-			),
-		),
-		'post_type' => array('post', 'page'),
-	)
-);
 
-// ======================== ALL CLIENT SHORTCODE
+
+
+// ================================================================================================================== ALL CLIENT SHORTCODE
 add_shortcode('client', 'scb_client');
 function scb_client($content=null){
 	$args = array(
@@ -1349,9 +1370,14 @@ shortcode_ui_register_for_shortcode(
 		'post_type' => array('post', 'page'),
 	)
 );
+// ================================================================================================================== END OF ALL CLIENT SHORTCODE
 
 
-// ====================================== OUTBOUND CARD SHORTCODE
+
+
+
+
+// ================================================================================================================== OUTBOUND CARD SHORTCODE
 add_shortcode('outbound_card', 'scb_outbound_card');
 function scb_outbound_card($atts) {
 	$atts = shortcode_atts(array(
@@ -1449,10 +1475,14 @@ shortcode_ui_register_for_shortcode(
 		'post_type' => array('post', 'page'),
 	)
 );
+// ================================================================================================================== END OF OUTBOUND CARD SHORTCODE
 
 
 
-// ===================================== video testimony
+
+
+
+// ================================================================================================================== VIDEO TESTIMONY SCHORTCODE
 add_shortcode('video_testimony', 'scb_video_testimony');
 function scb_video_testimony($atts, $content=null){
 	$atts = shortcode_atts(array(
@@ -1487,7 +1517,7 @@ function scb_video_testimony($atts, $content=null){
 	}
 	wp_reset_postdata();
 	
-	return '<div id="' .$post_id. '" class="video-testimony col-sm-12"><h2>' .$title. '</h2>' .$display. '</div>';
+	return '<div id="' .$post_id. '" class="video-testimony"><h2>' .$title. '</h2>' .$display. '</div>';
 }
 
 shortcode_ui_register_for_shortcode(
@@ -1516,58 +1546,12 @@ shortcode_ui_register_for_shortcode(
 		'post_type' => array('post', 'page')
 	)
 );
+// ================================================================================================================== VIDEO TESTIMONY SCHORTCODE
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ===============  check shortcode
-function wpb_find_shortcode($atts, $content=null) { 
-ob_start();
-extract( shortcode_atts( array(
-        'find' => '',
-    ), $atts ) );
- 
-$string = $atts['find'];
- 
-$args = array(
-    's' => $string,
-    );
- 
-$the_query = new WP_Query( $args );
- 
-if ( $the_query->have_posts() ) {
-        echo '<ul>';
-    while ( $the_query->have_posts() ) {
-    $the_query->the_post(); ?>
-    <li><a href="<?php  the_permalink() ?>"><?php the_title(); ?></a></li>
-    <?php
-    }
-        echo '</ul>';
-} else {
-        echo "Sorry no posts found"; 
-}
- 
-wp_reset_postdata();
-return ob_get_clean();
-}
-add_shortcode('shortcodefinder', 'wpb_find_shortcode');
+// ================================================================================================================== END OF SHORTCODE
 ?>

@@ -36,20 +36,26 @@
 <!--maps contact us page only-->
 <div class="maps"></div>
 
+
+
 <?php if( have_posts() ) : while( have_posts() ) : the_post(); ?>
 <!--post thumbnails-->
 <div class="bg-img-float">
 	<div class="wrapper">
-		<?php the_post_thumbnail(); ?>
+		<?php
+			if ( has_post_thumbnail() ) {
+				the_post_thumbnail();
+			} 
+		?>
 	</div>
 </div>
 
 <!--news page-->
 <div class="news-main-image">
 	<?php
-		if ( has_post_thumbnail() ) {
-			the_post_thumbnail();
-		} 
+		//if ( has_post_thumbnail() ) {
+			//the_post_thumbnail();
+		//} 
 	?>
 </div>
 
@@ -67,9 +73,68 @@
 
 
 
+<!-- ====================================== CUSTOM NEWS POST ====================================== -->
+<div class="container">
+    <div class="row">
+		<!--news page-->
+		<div class="news-post-list">
+			<h2 class="section-title">News Events</h2>
+			<div class="col-md-offset-2 col-md-8 col-sm-12">
+				<div class="news-list">
+					<?php
+					$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+					$args = array(
+						'post_type' => 'post',
+						'category_name' => 'news',
+						'post_per_page' => 10,
+						'paged' => $paged,
+						'post_parent' => $parent
+					);
+					$news_query = new wp_query($args);
+					if($news_query->have_posts()) {
+						while($news_query->have_posts()) {
+							$news_query->the_post();
+							?>
+							<div class="news-content">
+								<div class="news-thumbnail">
+									<?php
+									if(has_post_thumbnail()) {
+										the_post_thumbnail();
+									}
+									?>
+								</div>
+								<div class="news-detail">
+									<h4 class="news-title">
+										<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+									</h4>
+									<div class="news-short">
+										<?php
+										echo wp_trim_words(preg_replace("/<img[^>]+\>/i", '', get_the_content()), 40, '...');
+										?>
+									</div>
+									<a href="' .get_permalink(). '" class="btn btn-default">more <i class="fa fa-right-arrow"></i></a>
+								</div>
+							</div>
+							<?php
+						}
+						wp_reset_postdata();
+						posts_nav_link();
+						//previous_posts_link();
+					}
+					?>
+				</div>
+			</div>
+		</div>
+		<!--end of news page-->
+	</div>
+</div>
+
+
 
 <!--====================================== CUSTOM POST ==========================-->
 <div id="custom_post" class="container">
+	
+	
 	
 	<div class="row">
 		<h2 class="custom-post-title-section">TESTIMONIALS</h2>

@@ -126,27 +126,8 @@ body
         display: none
     
     
-    
-    
-    //=================================================================================================================== N-O-T-P-A-G-E-H-O-M-E       
-    &:not(.page-home)
-    
-        //=============================================================================================================== THE TITLE       
-        .the-title
-            margin: 15px
-            display: block
-            +screen(sm)
-                font-size: 7em
-                .last
-                    display: block
-                    &:last-child:after
-                        //content: ' -'
-         
-        //=============================================================================================================== MUSTHEAD       
-        #musthead
-            display: none
-        
-        //=============================================================================================================== IMG FLOAT
+    //=================================================================================================================== PAGE TEMPLATE DEFAULT
+    &.page-template-default
         .bg-img-float
             position: absolute
             display: none
@@ -163,6 +144,70 @@ body
                 right: 0
                 +transform(rotate(25deg) translatex(-30%))
             .wrapper
+                position: absolute
+                display: block
+                width: 100%
+                height: 100%
+                +transform(rotate(-25deg) scale(1.5))
+                img
+                    width: 100%
+                    height: 100%
+    
+    //=================================================================================================================== POST TEMPLATE DEFAULT
+    &.post-template-default
+    
+        //=============================================================================================================== IMG FLOAT
+        .bg-img-float
+            display: block
+            +screen(sm)
+                width: 100%
+                height: 100vh
+                display: block !important
+                margin-top: -86px
+                margin-bottom: 5em
+                .wrapper
+                    height: 100vh
+                    img
+                        +img-clip
+        .the-title
+            margin: 15px !important
+    
+    //=================================================================================================================== N-O-T-P-A-G-E-H-O-M-E
+    &:not(.page-home)
+    
+        //=============================================================================================================== THE TITLE       
+        .the-title
+            margin: 15px
+            margin-top: 3em
+            display: block
+            +screen(sm)
+                font-size: 7em
+                .last
+                    display: block
+                    &:last-child:after
+                        //content: ' -'
+         
+        //=============================================================================================================== MUSTHEAD       
+        #musthead
+            display: none
+        
+        //=============================================================================================================== IMG FLOAT
+        //.bg-img-float
+            position: absolute
+            display: none
+            width: 800px
+            height: 800px
+            overflow: hidden
+            background-color: darken($white, 10)
+            z-index: -1
+            +radius(20%)
+            +screen(md)
+                display: block
+                top: -20%
+                left: 50%
+                right: 0
+                +transform(rotate(25deg) translatex(-30%))
+            //.wrapper
                 position: absolute
                 display: block
                 width: 100%
@@ -613,9 +658,10 @@ body
                     +square(100%)
                     +radius(50%)
         .scb-carousel
+            padding-left: 0
+            padding-right: 0
             .carousel-indicators
                 display: none
-                        
             .carousel-control
                 display: block
                 background-image: none
@@ -640,6 +686,8 @@ body
                     ul
                         display: none
             +screen(sm)
+                padding-left: 15px
+                padding-right: 15px
                 .carousel-control
                     display: none
                 .carousel-indicators
@@ -780,7 +828,8 @@ body
                                 
     // =============================================================================================================== NEWS PAGE                            
     &.page-news
-        .entry-content
+        .news-post-list
+            display: block !important
             .section-title
                 text-transform: capitalize
                 text-align: center
@@ -867,6 +916,30 @@ body
                     
     // =============================================================================================================== PAGE CLIENTS
     &.page-our-clients
+        .bg-img-float
+            position: absolute
+            display: none
+            width: 800px
+            height: 800px
+            overflow: hidden
+            background-color: saturate(lighten($theme, 20), 30)
+            z-index: -1
+            +radius(20%)
+            +screen(md)
+                display: block
+                top: -50%
+                left: 0%
+                right: 0
+                +transform(rotate(30deg))
+            .wrapper
+                position: absolute
+                display: block
+                width: 100%
+                height: 100%
+                +transform(rotate(-30deg) scale(1.5))
+                img
+                    width: 100%
+                    height: 100%
         .clients
             display: block
             
@@ -1108,12 +1181,14 @@ body
     
     // ---- DISPLAY NONE ON POST TYPE "PAGE" OR "POST"
     &.page-template-default
-        #custom_post
+        #custom_post,
+        .news-post-list
             display: none
             
     &.post-template-default
         .maps,
-        .clients
+        .clients,
+        .news-post-list
             display: none
             
         // ---- STYLE FOR POST SCHEDULE

@@ -186,8 +186,9 @@ $(document).ready(function() {
 function snapToTop() {
 	$navHeight = $('.main-menu').height();
 	$('.news-main-image').css('margin-top', - $navHeight);
-	$('.page-home .carousel[id*="cptbc"]').css('top', - $navHeight);
-	$('.page-home .carousel[id*="cptbc"]').css('margin-bottom', - $navHeight);
+	$('.post-template-default .bg-img-float').css('margin-top', - $navHeight);
+	$('.page-home .carousel[id*="cptbc"]').css({'top': - $navHeight, 'margin-bottom': - $navHeight});
+	//$('.page-home .carousel[id*="cptbc"]').css('margin-bottom', - $navHeight);
 }
 
 

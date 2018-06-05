@@ -664,6 +664,7 @@ function scb_row($atts, $content=null) {
 		
 		$category = $atts['cat'];
 		
+		//$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 		$args = array(
 			'post_type' 		=> 'post',
 			'orderby' 			=> 'date',
@@ -1486,7 +1487,7 @@ function scb_video_testimony($atts, $content=null){
 	}
 	wp_reset_postdata();
 	
-	return '<div id="' .$post_id. '" class="video-testimony"><h2>' .$title. '</h2>' .$display. '</div>';
+	return '<div id="' .$post_id. '" class="video-testimony col-sm-12"><h2>' .$title. '</h2>' .$display. '</div>';
 }
 
 shortcode_ui_register_for_shortcode(
